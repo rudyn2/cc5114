@@ -1,5 +1,5 @@
 import numpy as np
-from abc import ABC, abstractmethod
+from abc import ABC
 
 
 class Perceptron(ABC):
@@ -9,6 +9,7 @@ class Perceptron(ABC):
         self.X = None
         self.X_bias = None
         self.t = None
+        self.b = None
         self.W = None
 
     def fit(self, x):
@@ -23,7 +24,7 @@ class Perceptron(ABC):
         ones = np.ones(shape=(self.X.shape[0], 1))
         self.X_bias = np.hstack([ones, self.X])
 
-    def train(self, t):
+    def train(self, t, plot_lc=False):
         """
         This method trains a perceptron using a simple algorithm explained in the McCulloch-Pitts model of a
         perceptron. The weights are stored in the W attribute.
@@ -31,23 +32,29 @@ class Perceptron(ABC):
         """
 
         self.t = t
+
+        # init learning rate
+        lr = 0.1
+
         # Init a weights vector
-        w = np.zeros(shape=(self.X.shape[1]+1, 1))
+        self.W = np.zeros(shape=(self.X.shape[1], 1))
+
+        # Init the bias
+        b = np.random.random()*-1 + np.random.random()
 
         # Training using perceptron algorithm
         for i in range(self.X.shape[0]):
-            ex = self.X_bias[i, :]
-            ex_target = t[i]
 
-            if (np.matmul(ex, w) >= 0 and ex_target == 1) or (np.matmul(ex, w) < 0 and ex_target == 0):
-                pass
-            else:
-                factor = -1 if ex_target == 0 else ex_target
-                adjust = factor*ex
-                adjust = adjust.reshape(self.X_bias.shape[1], 1)
-                w = np.add(w, adjust)
+            ex = self.X[i, :]
 
-        self.W = w
+            desired_output = t[i]
+            predicted_output = np.matmul(ex, self.W) + b
+            diff = float(desired_output-predicted_output)
+
+            self.W = self.W + lr*diff*(ex.reshape(self.W.shape[0], 1))
+            b += lr*diff
+
+        self.b = b
 
     def predict(self, verbose=False):
         """
@@ -120,7 +127,7 @@ class Adder:
         return sum, carry
 
 
-fake_data = np.random.randint(0, 2, size=(1000, 2))
+fake_data = np.random.randint(0, 2, size=(1000, 5))
 real_and = np.logical_and(fake_data[:, 0], fake_data[:, 1])
 real_and = np.array([1 if x else 0 for x in real_and])
 real_or = np.logical_or(fake_data[:, 0], fake_data[:, 1])
@@ -134,16 +141,16 @@ p_and = AND()
 p_and.fit(fake_data)
 p_and.train(real_and)
 result = p_and.predict(verbose=True)
-
-p_or.fit(fake_data)
-p_or.train(real_or)
-p_or.predict(verbose=True)
-
-p_nand.fit(fake_data)
-p_nand.train(real_nand)
-p_nand.predict(verbose=True)
-
-adder = Adder(p_nand)
-a, b = adder.sum(0, 0)
-
-print("\nThe sum bit was {} and the carry bit {}".format(a, b))
+#
+# p_or.fit(fake_data)
+# p_or.train(real_or)
+# p_or.predict(verbose=True)
+#
+# p_nand.fit(fake_data)
+# p_nand.train(real_nand)
+# p_nand.predict(verbose=True)
+#
+# adder = Adder(p_nand)
+# a, b = adder.sum(0, 0)
+#
+# print("\nThe sum bit was {} and the carry bit {}".format(a, b))
