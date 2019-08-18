@@ -9,6 +9,7 @@ class Neuron:
         self.activation_func = activation_func
         self.w = None
         self.bias = None
+        self.last_value = None
 
     def feed(self, x: np.ndarray) -> float:
         """
@@ -23,7 +24,9 @@ class Neuron:
             assert x.shape[0] == self.n_input, "The input shape is not allowed."
 
         pre_compute = np.matmul(x, self.w) + self.bias
-        return self.activation_func.get_value(pre_compute)
+        result = self.activation_func.get_value(pre_compute)
+        self.last_value = result
+        return result
 
     def update(self, w: np.ndarray, bias: float):
         """
