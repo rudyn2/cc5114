@@ -14,17 +14,14 @@ class Neuron:
     def feed(self, x: np.ndarray) -> float:
         """
         This methods makes the neuron fire using the activation function.
-        :param x:                   A numpy array 1D of same length than n input.
+        :param x:                   A numpy array 1D of same length than n input with shape (n, 1).
         :return:                    A float value.
         """
         assert self.w is not None, "This neuron doesn't has weights."
-        try:
-            assert x.shape[1] == self.n_input, "The input shape is not allowed."
-        except IndexError:
-            assert x.shape[0] == self.n_input, "The input shape is not allowed."
+        assert x.shape[0] == self.n_input, "The input shape is not allowed."
 
-        pre_compute = np.matmul(x, self.w) + self.bias
-        result = self.activation_func.get_value(pre_compute)
+        pre_compute = np.matmul(x.T, self.w) + self.bias
+        result = self.activation_func.get_value(pre_compute[0])
         self.last_value = result
         return result
 
