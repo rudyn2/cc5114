@@ -4,7 +4,7 @@ import numpy as np
 class Metrics:
 
     @staticmethod
-    def rms_loss(real_y, predicted_y):
+    def rmse_loss(real_y, predicted_y):
         """
         This method provides the functionality to calculate the Root Mean Square error between the predicted and real
         values.
@@ -12,11 +12,23 @@ class Metrics:
         :param predicted_y:                         A numpy array with predicted values.
         :return:                                    A single float value metric.
         """
+
         n = predicted_y.shape[0]
         total_loss = 0
         for single_output_index in range(n):
             total_loss += Metrics._euclidean_distance(real_y[single_output_index], predicted_y[single_output_index])**2
         return np.sqrt(total_loss/n)
+
+    @staticmethod
+    def mse_loss(real_y, predicted_y):
+        """
+        Gets the Mean Square Error between two real and predicted series.
+        :param real_y:                              A numpy array with real values.
+        :param predicted_y:                         A numpy array with predicted values.
+        :return:                                    A single float value metric.
+        """
+
+        return Metrics.rmse_loss(real_y, predicted_y)**2
 
     @staticmethod
     def confusion_matrix(real_y, predicted_y):
@@ -28,6 +40,10 @@ class Metrics:
         """
 
         assert real_y.shape[1] == predicted_y.shape[1], "The second dimension of input arrays must be equal."
+
+        # Evaluation of the result
+        real_y = Metrics._eval_result(real_y)
+        predicted_y = Metrics._eval_result(predicted_y)
 
         n_classes = real_y.shape[1]
         cm = np.zeros(shape=(n_classes, n_classes))
@@ -48,28 +64,13 @@ class Metrics:
         return cm
 
     @staticmethod
-    def accuracy(confusion_matrix):
+    def accuracy(confusion_matrix: np.ndarray):
+        """
+        Calculates the overall accuracy given a confusion matrix.
+        :param confusion_matrix:                    A 2D Numpy Array.
+        :return:                                    A single float value.
+        """
         return np.trace(confusion_matrix)/np.sum(confusion_matrix)
-
-    @staticmethod
-    def filter_class(data, row):
-        """
-        Filters a dataset with one hot encoding values and selects all the examples which in its "row" position has a 1.
-        :param real_y:                              Numpy array with one hot encoding.-
-        :param row:                                 Position of 1 (it describes the class).
-        :return:                                    The filtered numpy array
-        """
-
-        results = []
-        for example_index in range(data.shape[0]):
-            # Extract the example
-            example = data[example_index, :]
-            if example[row] == 1:
-                results.append(example)
-
-        mask = data[:, row] == 1
-
-        return np.array(results)
 
     @staticmethod
     def _euclidean_distance(x, y):
@@ -84,6 +85,11 @@ class Metrics:
 
     @staticmethod
     def one_hot_encoding(array: np.ndarray) -> np.ndarray:
+        """
+        Performs one hot encoding in the given input array.
+        :param array:                               A 1D Numpy Array.
+        :return:                                    A 2D Numpy Array.
+        """
 
         assert array.ndim == 1, "The array provided must be one dimensional"
 
@@ -101,15 +107,16 @@ class Metrics:
         return encoded_data
 
     @staticmethod
-    def _parse_sigmoid(array, threshold=0.5):
+    def _eval_result(output: np.ndarray):
         """
-        Parse an array to one hot encoding transformation.
-        :param array:
-        :param threshold:
-        :return:
+        It evaluates the result of the neural network. For each single output the result is mapped into a
+        one hot encoding where the class correspond to the index of the max value in each output.
+        :param output:                              A 2D Numpy Array.
+        :return:                                    A 2D Numpy Array.
         """
-        mask = array >= threshold
-        array[mask] = 1
-        array[~mask] = 0
-        return array
-
+        data = output.copy()
+        for row_index in range(data.shape[0]):
+            arg_max = np.argmax(data[row_index, :])
+            data[row_index, :] = 0
+            data[row_index, arg_max] = 1
+        return data

@@ -7,16 +7,20 @@ class Normalizer:
         self.data = None
 
     def fit(self, data):
+        """
+        Fits the data to the object.
+        :param data:                            A 2D Numpy Array.
+        """
 
         assert type(data) == np.ndarray, "The data must be a numpy array"
         self.data = data
 
     def transform(self, n_low, n_high):
         """
-        Transforms the data.
-        :param n_low:
-        :param n_high:
-        :return:
+        Transforms the fitted data.
+        :param n_low:                           Minimal value required after transformation.
+        :param n_high:                          Maximum value required after transformation.
+        :return:                                The transformed data.
         """
 
         assert self.data is not None, "The data has not been fitted."

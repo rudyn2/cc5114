@@ -2,6 +2,9 @@ from abc import abstractmethod
 
 
 class ActivationFunc:
+    """
+    Abstract class for Generic Activation Functions.
+    """
 
     def __init__(self):
         pass
