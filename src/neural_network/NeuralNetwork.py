@@ -1,6 +1,7 @@
 from src.neural_network.NeuronLayer import NeuronLayer
 from src.neural_network.exceptions import InvalidArchitectureType
 from src.neural_network.metrics.Metrics import Metrics
+from src.neural_network.preprocessing.Normalizer import Normalizer
 import time
 import numpy as np
 from sklearn.datasets import load_iris
@@ -78,7 +79,7 @@ class NeuralNetwork:
         result = actual_layer_output
         return result
 
-    def backwards(self, error, input_array, output_array):
+    def backwards(self, error, output_array):
 
         # We define the deltas
         layers_index = list(range(1, len(self.architecture)-1))
@@ -100,12 +101,10 @@ class NeuralNetwork:
                 neuron_delta = neuron_error*neuron.activation_func.get_derivative(neuron.last_value)
                 deltas.append(neuron_delta)
 
-            error = np.array(deltas)
-            layer_deltas.append(error)
+            layer_deltas.append(np.array(deltas))
 
         layer_deltas.reverse()
         return layer_deltas
-
 
     @staticmethod
     def _calculate_error(prev_pos_neuron, layer, deltas):
@@ -180,17 +179,23 @@ class NeuralNetwork:
                 error = self.y[example_index]-output
 
                 # Step 2 - Backwards
-                deltas = self.backwards(error, example, output)
+                deltas = self.backwards(error, output)
 
                 # Step 3 - Updates
                 self.bp_update(example, deltas)
 
             actual_prediction = self.predict()
+            actual_prediction[actual_prediction >= 0.5] = 1
+            actual_prediction[actual_prediction < 0.5] = 0
 
-            # Storing Epoch metrics
+            # Calculates some metrics
             rmse = Metrics.rms_loss(self.y, actual_prediction)
-            summary['accuracy'].append(Metrics.accuracy(self.y, actual_prediction))
+            cm = Metrics.confusion_matrix(self.y, actual_prediction)
+            accuracy = Metrics.accuracy(cm)
+
+            # Store them
             summary['rmse'].append(rmse)
+            summary['accuracy'].append(accuracy)
 
             if verbose:
                 print("EPOCH: {} | RMSE: {:.2f} | TIME: {:.2f} ms".format(n_epoch+1, rmse, (time.time()-start_time)/10**-3))
@@ -211,6 +216,13 @@ class NeuralNetwork:
         """
         return self.summary['rmse']
 
+    def get_precision(self):
+        """
+        Gets the precision curve points for the last training procedure.
+        :return:                        A numpy array.
+        """
+        return self.summary['accuracy']
+
     def predict(self):
         """
         This method provides the functionality to predict the values per target using the neural network.
@@ -228,7 +240,7 @@ class NeuralNetwork:
 
 np.random.seed(42)
 
-nn = NeuralNetwork([4, 3, 3], 'sigmoid', 0.1)
+nn = NeuralNetwork([4, 15, 3], 'sigmoid', 0.1)
 
 # Pre processing the data to train
 data = load_iris(return_X_y=True)
@@ -236,36 +248,32 @@ X = data[0]
 y = Metrics.one_hot_encoding(data[1])
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
-sc = StandardScaler()
+# Just to test the confusion matrix
+# y1 = y_test
+# y2 = y_train[:y_test.shape[0], :]
 
-x_train_std = sc.fit_transform(X_train)
-x_test_std = sc.fit_transform(X_test)
+normalizer = Normalizer()
+x_train_std = normalizer.fit_transform(X_train, -1, 1)
+x_test_std = normalizer.fit_transform(X_test, -1, 1)
 
 nn.fit(x_train_std, y_train)
-nn.train(150, verbose=True)
+nn.train(100, verbose=True)
 y_predicted = nn.predict()
 
 # cm = Metrics.confusion_matrix(y_train, y_predicted)
 
-plt.plot(nn.get_rmse())
-plt.title('RMSE vs Epochs')
+precision = nn.get_precision()
+rmse = nn.get_rmse()
+
+fig, axs = plt.subplots(2, sharex="col")
+
+axs[0].plot(rmse)
+axs[0].set_title("RMSE vs Epochs")
+axs[0].set(ylabel="RMSE")
+axs[1].plot(precision)
+axs[1].set(ylabel="Precision", xlabel="# Epochs")
+axs[1].set_title("Precision vs Epochs")
 plt.show()
-
-
-# fake_data = np.random.randint(0, 2, size=(1000, 2))
-# real_and = np.logical_and(fake_data[:, 0], fake_data[:, 1])
-# real_and = np.array([1 if x else 0 for x in real_and])
-
-# nn = NeuralNetwork([2, 1], 'sigmoid', 0.01)
-# nn.fit(fake_data, real_and)
-# nn.train(100, verbose=True)
-
-# accuracy = nn.get_accuracy()
-
-# plt.plot(accuracy)
-# plt.xlabel("# Epochs")
-# plt.ylabel("Accuracy")
-# plt.show()
 
 
 

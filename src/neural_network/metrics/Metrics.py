@@ -4,27 +4,6 @@ import numpy as np
 class Metrics:
 
     @staticmethod
-    def accuracy(real_y, predicted_y):
-        """
-        This method provides the functionality to calculate the accuracy between a prediction and a real set of values.
-        :param real_y:                              A numpy array with real values.
-        :param predicted_y:                         A numpy array with predicted values.
-        :return:                                    A single float value.
-        """
-
-        assert len(real_y) == len(predicted_y), "The length must be equal."
-        # predicted_y= Metrics._parse_sigmoid(predicted_y)
-
-        n = predicted_y.shape[0]
-        total = 0
-        for single_output_index in range(n):
-            if predicted_y[single_output_index].all() == real_y[single_output_index].all():
-                total += 1
-
-        # Returns the ratio of corrected samples over all the samples
-        return total/n
-
-    @staticmethod
     def rms_loss(real_y, predicted_y):
         """
         This method provides the functionality to calculate the Root Mean Square error between the predicted and real
@@ -53,16 +32,44 @@ class Metrics:
         n_classes = real_y.shape[1]
         cm = np.zeros(shape=(n_classes, n_classes))
 
-        for row in range(n_classes):
-            for column in range(n_classes):
+        for class_i in range(n_classes):
 
-                # We create the predicted and expected codes
-                code = np.zeros(shape=(1, n_classes))
-                predicted_code = code[row]
-                real_code = code[row]
+            # Selects the i-class indexes
+            mask = real_y[:, class_i] == 1
+            # Selects the predicted elements with the mask
+            predicted_i_class = predicted_y[mask]
 
-                predicted_code[row] = 1
-                real_code[column] = 1
+            for class_j in range(n_classes):
+
+                # Selects class j
+                inter = predicted_i_class[predicted_i_class[:, class_j] == 1]
+                cm[class_i, class_j] += inter.shape[0]
+
+        return cm
+
+    @staticmethod
+    def accuracy(confusion_matrix):
+        return np.trace(confusion_matrix)/np.sum(confusion_matrix)
+
+    @staticmethod
+    def filter_class(data, row):
+        """
+        Filters a dataset with one hot encoding values and selects all the examples which in its "row" position has a 1.
+        :param real_y:                              Numpy array with one hot encoding.-
+        :param row:                                 Position of 1 (it describes the class).
+        :return:                                    The filtered numpy array
+        """
+
+        results = []
+        for example_index in range(data.shape[0]):
+            # Extract the example
+            example = data[example_index, :]
+            if example[row] == 1:
+                results.append(example)
+
+        mask = data[:, row] == 1
+
+        return np.array(results)
 
     @staticmethod
     def _euclidean_distance(x, y):
