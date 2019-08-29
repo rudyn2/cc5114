@@ -1,4 +1,9 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import itertools
+import warnings
+
+
 
 
 class Metrics:
@@ -40,6 +45,7 @@ class Metrics:
         """
 
         assert real_y.shape[1] == predicted_y.shape[1], "The second dimension of input arrays must be equal."
+        assert real_y.shape[0] == predicted_y.shape[0], "The length of both arrays must be equal"
 
         # Evaluation of the result
         real_y = Metrics._eval_result(real_y)
@@ -61,7 +67,7 @@ class Metrics:
                 inter = predicted_i_class[predicted_i_class[:, class_j] == 1]
                 cm[class_i, class_j] += inter.shape[0]
 
-        return cm
+        return cm.astype('int')
 
     @staticmethod
     def accuracy(confusion_matrix: np.ndarray):
@@ -84,7 +90,7 @@ class Metrics:
         return np.sqrt(np.sum((x-y)**2))
 
     @staticmethod
-    def one_hot_encoding(array: np.ndarray) -> np.ndarray:
+    def one_hot_encoding(array: np.ndarray) -> (np.ndarray, np.ndarray):
         """
         Performs one hot encoding in the given input array.
         :param array:                               A 1D Numpy Array.
@@ -104,7 +110,7 @@ class Metrics:
             codes.append(code)
 
         encoded_data = np.array(codes)
-        return encoded_data
+        return encoded_data, classes
 
     @staticmethod
     def _eval_result(output: np.ndarray):
@@ -120,3 +126,45 @@ class Metrics:
             data[row_index, :] = 0
             data[row_index, arg_max] = 1
         return data
+
+    @staticmethod
+    def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
+        """
+        Plots the confusion matrix in a grid. If normalize equals true each cell has a number between 0 and 1.
+        :param cm:                                  Confusion matrix to plot with INTEGER values.
+        :param classes:                             Labels of each class.
+        :param normalize:                           Boolean to indicate if the matrix wants to be normalized.
+        :param title:                               Title of the matrix. Default: Confusion matrix
+        :param cmap:                                Matplotlib color map
+        """
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+            # Executes the normalization if needed
+            if normalize:
+                cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+            # Shows the matrix with a colors
+            plt.imshow(cm, interpolation='nearest', cmap=cmap)
+            plt.title(title)
+            plt.colorbar()
+
+            # Add the class labels
+            tick_marks = np.arange(len(classes))
+            plt.xticks(tick_marks, classes, rotation=45)
+            plt.yticks(tick_marks, classes)
+
+            # Add the cells values in text
+            fmt = '.2f' if normalize else 'd'
+            thresh = cm.max() / 2.
+            for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+                plt.text(j, i, format(cm[i, j], fmt),
+                         horizontalalignment="center",
+                         color="white" if cm[i, j] > thresh else "black")
+
+            # Format and show the matrix
+            plt.ylabel('True label')
+            plt.xlabel('Predicted label')
+            plt.grid(False)
+            plt.tight_layout()
+            plt.show()

@@ -1,12 +1,21 @@
 from src.neural_network.Neuron import Neuron
 from src.neural_network.exceptions import NotAvailableActivationFunction
-from src.neural_network.activation_function import Sigmoid, Step
+from src.neural_network.activation_function import Sigmoid, Step, Tanh
 import numpy as np
 
 
 class NeuronLayer:
+    """
+    This class provides the functionality to operate a layer of neurons.
+    """
 
     def __init__(self, n_input, n_neurons, activation_func: str):
+        """
+        Constructor for the Neuron Layer Class.
+        :param n_input:                     Number of inputs of each neuron of the neuron layer.
+        :param n_neurons:                   Number of neurons in this layer.
+        :param activation_func:             Activation function of the layer.
+        """
 
         # Each neuron of the layer has n inputs
         self.n_input = n_input
@@ -21,13 +30,15 @@ class NeuronLayer:
     @staticmethod
     def __parse_activation_function_name(name: str):
 
-        allowed = ['sigmoid', 'step']
+        allowed = ['sigmoid', 'step', 'tanh']
         if name.lower() not in allowed:
             raise NotAvailableActivationFunction.NotAvailableActivationFunction
 
         parser = {
             'sigmoid': Sigmoid.Sigmoid(),
-            'step': Step.Step()
+            'step': Step.Step(),
+            'tanh': Tanh.Tanh()
+
         }
         return parser[name.lower()]
 
@@ -66,10 +77,7 @@ class NeuronLayer:
         It updates each neuron with random weights and bias.
         """
         weights = np.random.random(size=(len(self.layer), self.n_input))*3
-        # weights = np.array([0.1581, 0.8045]).T
-        # weights = np.ones(shape=(len(self.layer), self.n_input))
         bias = np.random.random(size=(weights.shape[0], 1))*3
-        # bias = np.array([0.8729])
         self.update(weights, bias)
 
 

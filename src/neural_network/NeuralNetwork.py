@@ -1,13 +1,8 @@
 from src.neural_network.NeuronLayer import NeuronLayer
 from src.neural_network.exceptions import InvalidArchitectureType
-from src.neural_network.metrics.Metrics import Metrics
-from src.neural_network.preprocessing.Normalizer import Normalizer
-import time
 import numpy as np
-from sklearn.datasets import load_iris
-from sklearn.model_selection import train_test_split
-from collections import defaultdict
-from src.neural_network.preprocessing.KFold import KFold
+import time
+from src.neural_network.metrics.Summary import Summary
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
@@ -17,16 +12,18 @@ class NeuralNetwork:
     This class implements the functionality needed to create and train a neural network using backpropagation.
     """
 
-    def __init__(self, architecture: list, activation_function: str, learning_rate: float):
+    def __init__(self, architecture: list, activation_function: str or list, learning_rate: float):
 
         self._check_architecture_list(architecture)
         self.architecture = architecture
+        self.activation_functions = self._check_activation_function(activation_function)
+
         self.n_input = architecture[0]
         self.learning_rate = learning_rate
-        self.neural_network = self._build_neural_network(architecture, activation_func=activation_function)
+        self.neural_network = self._build_neural_network(architecture, activation_func=self.activation_functions)
         self.x = None
         self.y = None
-        self.summary = None
+        self.summary = Summary()
 
     @staticmethod
     def _check_architecture_list(architecture: list):
@@ -34,16 +31,34 @@ class NeuralNetwork:
         Checks that a valid architecture was introduced.
         :param architecture:                    A list with architecture parameters.
         """
-
+        # Checks that the architecture list is not empty
         if len(architecture) <= 1:
-            raise InvalidArchitectureType
+            raise InvalidArchitectureType.InvalidArchitectureType
 
         for number in architecture:
             if type(number) != int:
+                raise InvalidArchitectureType.InvalidArchitectureType
+
+    def _check_activation_function(self, s: str or list):
+        """
+        Checks that a valid activation function was introduced.
+        :param s:                               Name of activation function or list with activation functions.
+        :return:                                Boolean. True if is a valid input.
+        """
+        if type(s) == str:
+            return [s]*(len(self.architecture)-1)
+
+        elif type(s) == list:
+            # Checks that a every item is a valid string
+            for func in s:
+                if type(func) != str:
+                    raise ValueError
+            if len(s) != len(self.architecture)-1:
                 raise InvalidArchitectureType
+            return s
 
     @staticmethod
-    def _build_neural_network(architecture: list, activation_func: str):
+    def _build_neural_network(architecture: list, activation_func: str or list):
         """
         Builds the neural network using random weights initialization.
         :param architecture:                    The architecture of the neural network.
@@ -53,7 +68,9 @@ class NeuralNetwork:
 
         neural_network = []
         for n_neurons_index in range(1, len(architecture)):
-            layer = NeuronLayer(architecture[n_neurons_index-1], architecture[n_neurons_index], activation_func)
+            layer = NeuronLayer(architecture[n_neurons_index-1],
+                                architecture[n_neurons_index],
+                                activation_func[n_neurons_index-1])
             layer.random_init()
             neural_network.append(layer)
         return neural_network
@@ -184,7 +201,6 @@ class NeuralNetwork:
         assert type(epochs) == int and epochs >= 1, "The epochs is not a valid number."
 
         total_time = time.time()
-        summary = defaultdict(list)
         for n_epoch in range(epochs):
 
             start_time = time.time()
@@ -203,46 +219,22 @@ class NeuralNetwork:
                 # Step 3 - Updates
                 self.bp_update(example, deltas)
 
-            actual_prediction = self.predict()
-
-            # Calculates some metrics
-            rmse = Metrics.rmse_loss(self.y, actual_prediction)
-            mse = Metrics.mse_loss(self.y, actual_prediction)
-            cm = Metrics.confusion_matrix(self.y, actual_prediction)
-            accuracy = Metrics.accuracy(cm)
-
-            # Store them
-            summary['rmse'].append(rmse)
-            summary['accuracy'].append(accuracy)
-            summary['mse'].append(mse)
+            self.summary.fit_and_add_step(self.y, self.predict())
 
             if verbose:
-                print("EPOCH: {} | RMSE: {:.2f} | TIME: {:.2f} ms".format(n_epoch+1, rmse, (time.time()-start_time)/10**-3))
+                print("EPOCH: {} | MSE: {:.4f} | Acc: {:.4f} | TIME: {:.2f} ms".format(n_epoch+1,
+                                                                                       self.summary.get_mse(),
+                                                                                       self.summary.get_accuracy(),
+                                                                                       (time.time()-start_time)/10**-3))
         if verbose:
-            print("Total Time: {:.2f} s| Best Accuracy {:.3f}".format((time.time()-total_time), summary['accuracy'][-1]))
+            print("Total Time: {:.2f} s".format((time.time()-total_time)))
 
-        self.summary = summary
-
-    def get_accuracy(self) -> list:
+    def get_summary(self) -> Summary:
         """
-        Gets the accuracy curve points for the last training procedure.
+        Gets the summary content of the last training procedure.
         :return:                        A numpy array.
         """
-        return self.summary['accuracy']
-
-    def get_rmse(self) -> list:
-        """
-        Gets the accuracy curve points for the last training procedure.
-        :return:                        A numpy array.
-        """
-        return self.summary['rmse']
-
-    def get_precision(self) -> list:
-        """
-        Gets the precision curve points for the last training procedure.
-        :return:                        A numpy array.
-        """
-        return self.summary['accuracy']
+        return self.summary
 
     def predict(self) -> np.ndarray:
         """
@@ -258,34 +250,27 @@ class NeuralNetwork:
 
         return np.array(predicted_values)
 
+    def update_weights(self, list_parameters: list):
+        """
+        It updates the neural network with a list of parameters. Each item of the list must be a tuple. Each
+        tuple must have 2 Numpy arrays. The first one must contain the weights and the second one the biases. Each
+        row of the weights must be a n-dimensional vector with the weights for each previous layer connection (e.g.
+        for the first hidden layer each row has same length than number of features). The biases must be a 1-D
+        numpy array with same length that number of neurons in the layer. The layers index are positional with the list
+        of parameters (e.g. the first item of the list parameters corresponds to the weights and biases of the first
+        hidden layer and so on).
+        :param list_parameters:                 List with parameters.
+        :return:
+        """
+        assert len(list_parameters) == len(self.architecture)-1
 
-np.random.seed(42)
+        for pos, item in enumerate(list_parameters):
+            weights = item[0]
+            biases = item[1]
+            self.neural_network[pos].update(weights, biases)
 
-# Pre processing the data to train
-data = load_iris(return_X_y=True)
-X = data[0]
-y = Metrics.one_hot_encoding(data[1])
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
-normalizer = Normalizer()
-x_train_std = normalizer.fit_transform(X_train, -1, 1)
-x_test_std = normalizer.fit_transform(X_test, -1, 1)
 
-kfold = KFold()
-
-accuracy = []
-rmse = []
-for train_index, test_index in kfold.fit_split(X_train, 6):
-
-    nn = NeuralNetwork([4, 15, 3], 'sigmoid', 0.1)
-    nn.fit(x_train_std, y_train)
-    nn.train(100, verbose=True)
-
-    accuracy.append(nn.get_accuracy()[-1])
-    rmse.append(nn.get_rmse()[-1])
-
-print("Mean acc: {:.3f}, std acc: {:.3f}".format(np.mean(accuracy), np.std(accuracy)))
-print("Mean loss: {:.3f}, std loss: {:.3f}".format(np.mean(rmse), np.std(rmse)))
 
 
 

@@ -13,7 +13,9 @@ class Tanh(ActivationFunc):
         :param x:                           Input of function.
         :return:                            Mapped value.
         """
-        return (np.exp(x)-np.exp(-x))/(np.exp(x)+np.exp(-x))
+        a = np.exp(x)
+        b = np.exp(-x)
+        return (a-b)/(a+b)
 
     def get_derivative(self, x):
         """
