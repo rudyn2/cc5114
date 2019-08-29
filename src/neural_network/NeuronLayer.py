@@ -65,10 +65,10 @@ class NeuronLayer:
         """
         It updates each neuron with random weights and bias.
         """
-        weights = np.random.random(size=(len(self.layer), self.n_input))
+        weights = np.random.random(size=(len(self.layer), self.n_input))*3
         # weights = np.array([0.1581, 0.8045]).T
         # weights = np.ones(shape=(len(self.layer), self.n_input))
-        bias = np.random.random(size=(weights.shape[0], 1))
+        bias = np.random.random(size=(weights.shape[0], 1))*3
         # bias = np.array([0.8729])
         self.update(weights, bias)
 

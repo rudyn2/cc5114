@@ -2,8 +2,14 @@ import numpy as np
 
 
 class Normalizer:
+    """
+    This class provides the functionality to performs normalization over a dataset.
+    """
 
     def __init__(self):
+        """
+        Constructor for the Normalizer class.
+        """
         self.data = None
 
     def fit(self, data):

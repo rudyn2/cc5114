@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from collections import defaultdict
+from src.neural_network.preprocessing.KFold import KFold
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
@@ -260,8 +261,6 @@ class NeuralNetwork:
 
 np.random.seed(42)
 
-nn = NeuralNetwork([4, 15, 3], 'sigmoid', 0.1)
-
 # Pre processing the data to train
 data = load_iris(return_X_y=True)
 X = data[0]
@@ -272,24 +271,21 @@ normalizer = Normalizer()
 x_train_std = normalizer.fit_transform(X_train, -1, 1)
 x_test_std = normalizer.fit_transform(X_test, -1, 1)
 
-nn.fit(x_train_std, y_train)
-nn.train(100, verbose=True)
-y_predicted = nn.predict()
+kfold = KFold()
 
-precision = nn.get_precision()
-rmse = nn.get_rmse()
+accuracy = []
+rmse = []
+for train_index, test_index in kfold.fit_split(X_train, 6):
 
-fig, axs = plt.subplots(2, sharex="col")
+    nn = NeuralNetwork([4, 15, 3], 'sigmoid', 0.1)
+    nn.fit(x_train_std, y_train)
+    nn.train(100, verbose=True)
 
-axs[0].plot(rmse)
-axs[0].set_title("RMSE")
-axs[0].set(ylabel="RMSE")
-axs[1].plot(precision)
-axs[1].set(ylabel="Precision", xlabel="")
-axs[1].set_title("Precision vs Epochs")
-plt.show()
+    accuracy.append(nn.get_accuracy()[-1])
+    rmse.append(nn.get_rmse()[-1])
 
-
+print("Mean acc: {:.3f}, std acc: {:.3f}".format(np.mean(accuracy), np.std(accuracy)))
+print("Mean loss: {:.3f}, std loss: {:.3f}".format(np.mean(rmse), np.std(rmse)))
 
 
 

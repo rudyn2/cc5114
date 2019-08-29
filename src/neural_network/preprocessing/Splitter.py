@@ -57,15 +57,3 @@ class Splitter:
         self.fit(x, y)
         return self.transform(test_size)
 
-np.random.seed(42)
-
-from src.neural_network.metrics.Metrics import Metrics
-
-from sklearn.datasets import load_iris
-# Pre processing the data to train
-data = load_iris(return_X_y=True)
-X = data[0]
-y = Metrics.one_hot_encoding(data[1])
-
-s = Splitter()
-X_train, X_test, y_train, y_test = s.fit_transform(X, y, test_size=0.3)
