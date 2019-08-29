@@ -6,7 +6,7 @@ Table of Contents
 =================
 
   * [Usage](#usage)
-    * [Example execution](#code_run)
+    * [Example execution](#example-execution)
     * [Initialization](#arch)
   * [Analysis](#analysis)
     * [Training evolution](#train_plots)
