@@ -2,6 +2,10 @@
 
 The code in this folder implements a lot of functionality in order to train a Neural Network.
 
+### DISCLAIMER
+
+I am not a native spanish speaker so maybe you might find some spelling mistakes (sorry).
+
 Table of Contents
 ================
 
