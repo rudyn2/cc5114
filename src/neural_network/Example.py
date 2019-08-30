@@ -1,6 +1,7 @@
 import sys
 from os.path import dirname
 import os
+import matplotlib.pyplot as plt
 
 # Sets the PYTHON ENV PATHS
 file_abs_path = os.path.abspath(dirname(__file__))
@@ -49,26 +50,40 @@ nn.fit(x_train_std, y_train)
 nn.train(100, verbose=True)
 
 # Gets the summary results
-cm = nn.get_summary().get_confusion_matrix()
+summ = nn.get_summary()
+cm = summ.get_confusion_matrix()
 Metrics.plot_confusion_matrix(cm, classes)
 
-"""
--------------- BONUS -------------
-"""
-kfold = KFold()
-accuracy = []
-rmse = []
+# Gets the accuracy and loss
+accuracy = summ.summary['accuracy']
+mse = summ.summary['mse']
 
-# K-Fold validation
-for train_index, test_index in kfold.fit_split(X_train, 6):
+fig, axs = plt.subplots(2, 1, figsize=(10, 5))
+axs[0].plot(accuracy)
+axs[0].set(title='Accuracy vs iteration', ylabel='Accuracy', xlabel='Iteration')
 
-    nn = NeuralNetwork([4, 15, 3], 'sigmoid', 0.1)
-    nn.fit(x_train_std, y_train)
-    nn.train(100, verbose=True)
+axs[1].plot(mse)
+axs[1].set(title='MSE vs iteration', ylabel='MSE', xlabel='Iteration')
 
-    summ = nn.get_summary()
-    accuracy.append(summ.summary['accuracy'][-1])
-    rmse.append(summ.summary['rmse'][-1])
+plt.show()
 
-print("Mean acc: {:.3f}, std acc: {:.3f}".format(np.mean(accuracy), np.std(accuracy)))
-print("Mean loss: {:.3f}, std loss: {:.3f}".format(np.mean(rmse), np.std(rmse)))
+# """
+# -------------- BONUS -------------
+# """
+# kfold = KFold()
+# accuracy = []
+# rmse = []
+#
+# # K-Fold validation
+# for train_index, test_index in kfold.fit_split(X_train, 6):
+#
+#     nn = NeuralNetwork([4, 15, 3], 'sigmoid', 0.1)
+#     nn.fit(x_train_std, y_train)
+#     nn.train(100, verbose=True)
+#
+#     summ = nn.get_summary()
+#     accuracy.append(summ.summary['accuracy'][-1])
+#     rmse.append(summ.summary['rmse'][-1])
+#
+# print("Mean acc: {:.3f}, std acc: {:.3f}".format(np.mean(accuracy), np.std(accuracy)))
+# print("Mean loss: {:.3f}, std loss: {:.3f}".format(np.mean(rmse), np.std(rmse)))
