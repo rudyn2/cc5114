@@ -108,8 +108,9 @@ Results
 ---
 
 I have used the Example script to perform some experiments with the neural network. First of all, i have trained
-the neural network using the Iris Dataset from sklearn. The purpose of this is seeing the evolution of the loss
-and accuracy of the net along the training.
+the neural network using the Iris Dataset from sklearn. The architecture used was 4 inputs, 15 neurons
+in the hidden layer and 3 outputs for the output layer. Using this, the purpose of this is seeing the evolution of the 
+loss and accuracy of the net along the training.
 
 ![Learning Curve](example_resources/learning_curve.png)
 
@@ -117,8 +118,8 @@ As we can see in the Learning Curve figure the accuracy of the neural network in
 to mention that each iteration correspond to a forward-backward step of the Backpropagation algorithm implemented
 to train the network. Equally, the Mean Squared Error decreases as much as more iterations we have.  
 
+The confusion matrix shows that the neural network efficiency is really high. The best accuracy for
+the iris data set in the training segment is of 97.14% and for the testing data set of ??. The overall
+accuracy is enough for the kind of application.  
 
-
-
-
-
+![Confusion matrix](example_resources/confusion_matrix.png)
