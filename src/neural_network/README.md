@@ -4,7 +4,8 @@ The code in this folder implements a lot of functionality in order to train a Ne
 
 ### DISCLAIMER
 
-I am not a native spanish speaker so maybe you might find some spelling mistakes (sorry).
+I am not a native spanish speaker so maybe you might find some spelling mistakes (sorry). I am trying to improve 
+my english abilities, thanks for your patience.
 
 Table of Contents
 ================
@@ -12,7 +13,6 @@ Table of Contents
   * [Cloning the repository](#cloning)
   * [Usage](#usage)
     * [Example execution](#example-execution)
-    * [Initialization](#arch)
   * [Analysis](#analysis)
     * [Implementation](#implementation)
     * [The rocks in the way](#the-rocks-in-the-way)
@@ -86,7 +86,10 @@ update is made after that 1 example is given to the network.
 The implementation was made using object oriented programming (OOP) in order to allow easy extensibility of the code laying 
 down the efficiency. At bird flight, the neural network is composed of neuron layers which at the time are composed of
 neurons (minimum entity). The neural layer class implements a lot of important methods like the initialization of the
-network parameters, updates of the weights and biases and parsing the function activations names to objects.
+network parameters and updates of the weights and biases. The neuron class has methods to parsing the function 
+activations names to objects, feeding and updating. The neural network contains the necessary code to implement
+the backpropagation and train the neural network. It also has some methods for robustness and prediction. It's important
+to say the neural network can fit training data, and both: training and validation data (using overloading). 
 
 At the moment exists 3 different activation functions: sigmoid, tanh and step. They are implemented in OOP and just have
 2 basic methods to obtain the evaluation of the function in a point and its derivative.
@@ -119,7 +122,14 @@ to mention that each iteration correspond to a forward-backward step of the Back
 to train the network. Equally, the Mean Squared Error decreases as much as more iterations we have.  
 
 The confusion matrix shows that the neural network efficiency is really high. The best accuracy for
-the iris data set in the training segment is of 97.14% and for the testing data set of ??. The overall
-accuracy is enough for the kind of application.  
+the iris data set in the training segment is of 100% and for the validation data set of 98.08. The overall
+accuracy is enough for this kind of application. In the testing data set, the network has a accuracy of 96.22%.
 
 ![Confusion matrix](example_resources/confusion_matrix.png)
+
+Given the results of the neural network in this data set we can say that it is over fitting the training data set.
+To adjust this result you can reduce the amount of neurons, try different learning rates or maybe increase the amount
+of data in order to increase the data variance. The reason of show this result and not other is demonstrate the
+over fitting phenomenal. After all, the results are really good, just a few examples in the testing set are being
+bad categorized.
+  

@@ -23,7 +23,11 @@ class NeuralNetwork:
         self.neural_network = self._build_neural_network(architecture, activation_func=self.activation_functions)
         self.x = None
         self.y = None
-        self.summary = Summary()
+        self.x_val = None
+        self.y_val = None
+        self.summary_train = Summary()
+        self.summary_val = Summary()
+        self.has_val = False
 
     @staticmethod
     def _check_architecture_list(architecture: list):
@@ -75,23 +79,62 @@ class NeuralNetwork:
             neural_network.append(layer)
         return neural_network
 
-    def fit(self, x_train, y_train):
+    def _check_data(self, x, y):
         """
-        Fits the data to the neural network.
-        :param x_train:                     A 2D Numpy Array.
-        :param y_train:                     A 1D Numpy Array with targets.
+        Checks that given data is correct. Otherwise this method will raise AssertionError.
+        :param x:                               Input data (can be training, validation or testing data) as a 2D
+                                                Numpy array.
+        :param y:                               Output data (can be training, validation or testing data) as a 2D or 1D
+                                                Numpy array.
+        :return:
         """
 
-        assert x_train.shape[1] == self.n_input, "The number of features of the input must be {}".format(self.n_input)
-        assert y_train.shape[0] == x_train.shape[0], "The target vector must have length: {}".format(x_train.shape[0])
+        # Assert for the training fitting
+        assert x.shape[1] == self.n_input, "The number of features of the input must be {}".format(self.n_input)
+        assert y.shape[0] == x.shape[0], "The target vector must have length: {}".format(x.shape[0])
 
         # Target length error
         msg = "The output of the NN must be equals to the target dimension."
-        if len(y_train.shape) == 1:
+        if len(y.shape) == 1:
             assert 1 == self.architecture[-1], msg
         else:
-            assert y_train.shape[1] == self.architecture[-1], msg
+            assert y.shape[1] == self.architecture[-1], msg
 
+    def fit_val(self, x_train, y_train, x_val, y_val):
+        """
+        Fits the data to the neural network.
+        :param x_train:                     A 2D Numpy Array with training data.
+        :param y_train:                     A 1D Numpy Array with targets of training data.
+        :param x_val:                       A 2D Numpy Array with validation data.
+        :param y_val:                       A 1D Numpy Array with targets of validation data.
+
+        """
+
+        # Checks the data
+        self._check_data(x_train, y_train)
+        self._check_data(x_val, y_val)
+
+        self.has_val = True
+
+        # Stores the data
+        self.x = x_train
+        self.y = y_train
+
+        self.x_val = x_val
+        self.y_val = y_val
+
+    def fit(self, x_train, y_train):
+        """
+        Fits the data to the neural network.
+        :param x_train:                     A 2D Numpy Array with training data.
+        :param y_train:                     A 1D Numpy Array with targets of training data.
+
+        """
+
+        # Checks the data
+        self._check_data(x_train, y_train)
+
+        # Stores the data
         self.x = x_train
         self.y = y_train
 
@@ -200,6 +243,8 @@ class NeuralNetwork:
         assert self.x is not None and self.y is not None, "The data has not been fitted."
         assert type(epochs) == int and epochs >= 1, "The epochs is not a valid number."
 
+        evolution_train_msg = "EPOCH: {} | MSE: {:.4f} | Train acc: {:.4f} | TIME: {:.2f} ms"
+        evolution_val_msg = "EPOCH: {} | MSE: {:.4f} | Train acc: {:.4f} | Val acc {:.4f}| TIME: {:.2f} ms"
         total_time = time.time()
         for n_epoch in range(epochs):
 
@@ -219,34 +264,52 @@ class NeuralNetwork:
                 # Step 3 - Updates
                 self.bp_update(example, deltas)
 
-            self.summary.fit_and_add_step(self.y, self.predict())
+            self.summary_train.fit_and_add_step(self.y, self.predict(self.x))
+
+            if self.has_val:
+                self.summary_val.fit_and_add_step(self.y_val, self.predict(self.x_val))
 
             if verbose:
-                print("EPOCH: {} | MSE: {:.4f} | Acc: {:.4f} | TIME: {:.2f} ms".format(n_epoch+1,
-                                                                                       self.summary.get_mse(),
-                                                                                       self.summary.get_accuracy(),
-                                                                                       (time.time()-start_time)/10**-3))
+                if self.has_val:
+                    print(evolution_val_msg.format(n_epoch+1,
+                                                   self.summary_train.get_mse(),
+                                                   self.summary_train.get_accuracy(),
+                                                   self.summary_val.get_accuracy(),
+                                                   (time.time()-start_time)/10**-3))
+                else:
+                    print(evolution_train_msg.format(n_epoch+1,
+                                                     self.summary_train.get_mse(),
+                                                     self.summary_train.get_accuracy(),
+                                                     (time.time()-start_time)/10**-3))
+
         if verbose:
             print("Total Time: {:.2f} s".format((time.time()-total_time)))
 
-    def get_summary(self) -> Summary:
+    def get_summary_train(self) -> Summary:
         """
-        Gets the summary content of the last training procedure.
+        Gets the training summary content of the last training procedure.
         :return:                        A numpy array.
         """
-        return self.summary
+        return self.summary_train
 
-    def predict(self) -> np.ndarray:
+    def get_summary_val(self) -> Summary:
         """
-        This method provides the functionality to predict the values per target using the neural network.
+        Gets the validation summary content of the last training procedure.
+        :return:                        A numpy array.
+        """
+        return self.summary_val
+
+    def predict(self, batch) -> np.ndarray:
+        """
+        This method provides the functionality to predict the values per batch using the neural network.
         :return:                                A numpy array with the predicted values.
         """
 
         predicted_values = []
 
         # Make a prediction for every sample
-        for example_index in range(self.x.shape[0]):
-            predicted_values.append(self.forward(self.x[example_index, :]))
+        for example_index in range(batch.shape[0]):
+            predicted_values.append(self.forward(batch[example_index, :]))
 
         return np.array(predicted_values)
 
@@ -268,13 +331,4 @@ class NeuralNetwork:
             weights = item[0]
             biases = item[1]
             self.neural_network[pos].update(weights, biases)
-
-
-
-
-
-
-
-
-
 
