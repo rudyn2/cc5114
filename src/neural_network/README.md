@@ -3,14 +3,16 @@
 The code in this folder implements a lot of functionality in order to train a Neural Network.
 
 Table of Contents
-=============`=`===
+================
 
-  * [Cloning the repository][#cloning]
+  * [Cloning the repository](#cloning)
   * [Usage](#usage)
     * [Example execution](#example-execution)
     * [Initialization](#arch)
   * [Analysis](#analysis)
-    * [Training evolution](#train_plots)
+    * [Implementation](#implementation)
+    * [The rocks in the way](#the-rocks-in-the-way)
+    * [Results](#results)
   
 
 Cloning the repository
@@ -70,11 +72,46 @@ neural network in the learning procedure.
 Analysis
 ===
 
+Implementation
+---
+
+Talking about theory, the neural network implemented is a vanilla neural network with (until now) no much flexibility. 
+The network uses the backpropagation algorithm which tries to minimize the (unique and default) mean squared error. Each
+update is made after that 1 example is given to the network.
+
+The implementation was made using object oriented programming (OOP) in order to allow easy extensibility of the code laying 
+down the efficiency. At bird flight, the neural network is composed of neuron layers which at the time are composed of
+neurons (minimum entity). The neural layer class implements a lot of important methods like the initialization of the
+network parameters, updates of the weights and biases and parsing the function activations names to objects.
+
+At the moment exists 3 different activation functions: sigmoid, tanh and step. They are implemented in OOP and just have
+2 basic methods to obtain the evaluation of the function in a point and its derivative.
+
+Other tools are also included in this repository. First, the metrics sub-package contains static methods
+to perform one hot encoding, calculate confusion matrix, calculate losses, and similar. Also, exists a summary
+class that uses the metrics functions and summaries the network results. Finally, in the preprocessing sub-package
+are implementations to split datasets, normalize them and use k-fold validation (more info in the code docs).
+
+The rocks in the way
+---
+
+The main source of errors was the implementation of the backpropagation algorithm. To say the truth, it is a really
+tricky algorithm with a lot of little details to take in count. The backward step of the algorithm is complicated.
+Also, the OOP implementation was a challenge in order to maintain the reliability of the code when more and more 
+code was added. 
+
+Results
+---
+
 I have used the Example script to perform some experiments with the neural network. First of all, i have trained
 the neural network using the Iris Dataset from sklearn. The purpose of this is seeing the evolution of the loss
 and accuracy of the net along the training.
 
-![Learning Curve](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/neural_network/example_resources/learning_curve.png)
+![Learning Curve](example_resources/learning_curve.png)
+
+As we can see in the Learning Curve figure the accuracy of the neural network increase over the iterations. We have
+to mention that each iteration correspond to a forward-backward step of the Backpropagation algorithm implemented
+to train the network. Equally, the Mean Squared Error decreases as much as more iterations we have.  
 
 
 
