@@ -24,23 +24,8 @@ class NeuronLayer:
         self.n_neurons = n_neurons
 
         # Builds the layer
-        self.layer = [Neuron(n_input, self.__parse_activation_function_name(activation_func)) for _ in range(n_neurons)]
+        self.layer = [Neuron(n_input, activation_func) for _ in range(n_neurons)]
         self.last_values = None
-
-    @staticmethod
-    def __parse_activation_function_name(name: str):
-
-        allowed = ['sigmoid', 'step', 'tanh']
-        if name.lower() not in allowed:
-            raise NotAvailableActivationFunction.NotAvailableActivationFunction
-
-        parser = {
-            'sigmoid': Sigmoid.Sigmoid(),
-            'step': Step.Step(),
-            'tanh': Tanh.Tanh()
-
-        }
-        return parser[name.lower()]
 
     def feed(self, input):
         """
