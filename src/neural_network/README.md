@@ -4,7 +4,7 @@ The code in this folder implements a lot of functionality in order to train a Ne
 
 ### DISCLAIMER
 
-I am not a native spanish speaker so maybe you might find some spelling mistakes (sorry). I am trying to improve 
+I am not a native english speaker so maybe you might find some spelling mistakes (sorry). I am trying to improve 
 my english abilities, thanks for your patience.
 
 Table of Contents
