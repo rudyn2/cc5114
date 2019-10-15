@@ -1,6 +1,11 @@
+import os
+from os.path import dirname
+import sys
+
 from src.genetic_algorithm.FitnessGuys import WordFitness, BitsSequenceFitness
 from src.genetic_algorithm.GeneticEngine import GeneticEngine
 from src.genetic_algorithm.IndividualGuys import WordIndividual, BitsSequenceIndividual
+
 
 # Execute the GA algorithm for the word exercise
 word_to_find = 'Elbroma'
