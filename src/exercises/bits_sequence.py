@@ -84,7 +84,7 @@ def mutation(individual: np.ndarray) -> np.ndarray:
 
     # Change the bits of the 10% of the gen
     n_to_change = len(individual)
-    mask = np.random.randint(0, n_to_change, size=int(0.1*n_to_change))
+    mask = np.random.randint(0, n_to_change, size=int(0.2*n_to_change))
     for idx in mask:
         individual[idx] = 0 if individual[idx] == 1 else 0
     return individual
@@ -174,6 +174,7 @@ def find_sequence_bits(*, target: list,
     if solution_found:
         best_match = population[np.argmax(scores), :]
         print(f"Solution found at generation {generation}")
+        print(f"Solution: {best_match}")
         return best_match, summary
     return None, summary
 
