@@ -3,9 +3,10 @@ from src.genetic_algorithm.GeneticEngine import GeneticEngine
 from src.genetic_algorithm.IndividualGuys import WordIndividual, BitsSequenceIndividual
 
 # Execute the GA algorithm for the word exercise
-w_fitness = WordFitness.WordFitness('Elbromas')
+word_to_find = 'Elbroma'
+w_fitness = WordFitness.WordFitness(word_to_find)
 ga = GeneticEngine(population_size=100,
-                   gen_size=8,
+                   gen_size=len(word_to_find),
                    mutation_rate=0.8,
                    gen_mutation_rate=0.2,
                    elitism_rate=0.1,

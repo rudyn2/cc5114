@@ -42,7 +42,7 @@ class GeneticEngine:
         temp_manager.fit(random_choices)
         return temp_manager.select_best()
 
-    def run(self):
+    def run(self, verbose=True):
         """
         Runs the Genetic Algorithm.
         :return:
@@ -65,7 +65,7 @@ class GeneticEngine:
             # Elitism
             new_generation = self.population.select_rate_best(self.elitism_rate)
 
-            for _ in range(int(self.population_size * self.mutation_rate)):
+            for _ in range(self.population_size):
                 parent_a = self.tournament_selection()
                 parent_b = self.tournament_selection()
 
@@ -84,14 +84,19 @@ class GeneticEngine:
             scores = self.population.calculate_scores()
 
             # Summary of the progress
-            summary['best_scores'].append(np.max(scores))
-            summary['worst_scores'].append(np.min(scores))
-            summary['mean_scores'].append((np.mean(scores)))
-            print(f"Generation {generation}, best score: {summary['best_scores'][-1]}, "
-                  f"worst score: {summary['worst_scores'][-1]}, mean score: {summary['mean_scores'][-1]}")
+            try:
+                summary['best_scores'].append(np.max(scores))
+                summary['worst_scores'].append(np.min(scores))
+                summary['mean_scores'].append((np.mean(scores)))
+            except ValueError:
+                pass
+            if verbose:
+                print(f"Generation {generation}, best score: {summary['best_scores'][-1]}, "
+                      f"worst score: {summary['worst_scores'][-1]}, mean score: {summary['mean_scores'][-1]}")
             generation += 1
 
-        print(f"Best individual of last generation: {self.population.select_best()}")
+        if verbose:
+            print(f"Best individual of last generation: {self.population.select_best()}")
         self.summary = summary
 
     def plot_evolution(self):
@@ -107,6 +112,10 @@ class GeneticEngine:
         plt.ylabel('Score')
         plt.legend()
         plt.show()
+
+    def get_summary(self):
+        return self.summary
+
 
 
 
