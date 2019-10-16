@@ -113,7 +113,7 @@ given some parameters, functions and classes. The algorithm is executed as follo
     plot_evolution() method. To see in detail the meaning of each parameter please visit the class documentation.
     
 * Utils: It has the plot hotmap method that given some gen size, fitness function and a individual generator can plots
-a hotmap that shows the performance of the genetic engine for combinations of population sizes and mutation rates.
+a hotmap that shows the performance of the genetic engine for a combination of population sizes and mutation rates.
 
 
 
