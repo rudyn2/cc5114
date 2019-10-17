@@ -112,8 +112,32 @@ given some parameters, functions and classes. The algorithm is executed as follo
     that a GA engine is created just call the run() method, to see the evolution of the generation executes the 
     plot_evolution() method. To see in detail the meaning of each parameter please visit the class documentation.
     
-* Utils: It has the plot hotmap method that given some gen size, fitness function and a individual generator can plots
+* Utils: It has the plot hotmap method that given some gen size, fitness function and a individual generator can plot
 a hotmap that shows the performance of the genetic engine for a combination of population sizes and mutation rates.
+
+Results
+====
+
+This genetic algorithm was tested for three kind of problems.
+
+Sequence of bits
+---
+
+This problem is about finding a sequence of bits. Each individual corresponds to a list of bits of the same size as the
+specified gen size. Then, the fitness function is the total of coincidences bit by bit (e.g. 010 and 011 has 2 
+coincidences). The genetic evolution for this experimented is shown in the next figure, the sequence of bits that wants
+to be found is: 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0.
+
+Word
+---
+
+This problem is a little different from the sequence of bits but here a word wants to be found. So, for each position
+the amount of possible choices is bigger. This problems considers that each letter of word can be uppercase or 
+lower case. As the intuition says, the individual is modeled as a string, so, a mutation will mean that some letter
+will change for other letter. The fitness function corresponds to the amount of letters that are equals between the
+target word and the individual. For the experiment shown below the target word is "ElBromas".
+
+
 
 
 

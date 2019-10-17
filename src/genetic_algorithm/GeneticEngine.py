@@ -8,6 +8,9 @@ from src.genetic_algorithm.PopManager import PopManager
 
 
 class GeneticEngine:
+    """
+    Genetic Engine Class for a simple Genetic Algorithm implementation.
+    """
 
     def __init__(self, population_size: int,
                  gen_size: int,
@@ -18,6 +21,27 @@ class GeneticEngine:
                  individual_generator,
                  tournament_selection_proportion: float = 0.2,
                  max_iter: int = 100):
+        """
+        Generic constructor for the GeneticEngine Class.
+        :param population_size:                         The amount of individuals for the population (int).
+        :param gen_size:                                The length of each chromosome. E.g., if it the chromosomes
+                                                        are words will be the number of letters in the word.
+        :param mutation_rate:                           The probability that some individual will mutate.
+        :param gen_mutation_rate:                       The amount of genes that will change in each chromosome. E.g,
+                                                        if a word has 10 letters, a mutation rate of 0.2 means that
+                                                        20% (2 letters) will mutate.
+        :param elitism_rate:                            The proportion of the best of some population that will pass
+                                                        to the next generation. E.g., an elitism rate of 0.2 means
+                                                        that best 20% of the population will go straight to the
+                                                        next generation.
+        :param fitness_function:                        An instance of the Fitness Class. This object must implement
+                                                        the evaluation procedure.
+        :param individual_generator:                    An instance of the Individual Class. This object must have
+                                                        the logic for some individual in the context of some problem.
+        :param tournament_selection_proportion:         The proportion of individuals of some population that will
+                                                        be randomly selected. From these, the best will be extracted.
+        :param max_iter:                                Maximum number of iterations that the algorithm can pass.
+        """
 
         self.population_size = population_size
         self.gen_size = gen_size
@@ -108,12 +132,17 @@ class GeneticEngine:
         plt.plot(generations, self.summary['best_scores'], label='best')
         plt.plot(generations, self.summary['worst_scores'], label='worst')
         plt.plot(generations, self.summary['mean_scores'], label='mean')
+        plt.title('Generation evolution')
         plt.xlabel('# Generation')
         plt.ylabel('Score')
         plt.legend()
         plt.show()
 
     def get_summary(self):
+        """
+        Returns the generation scores per generation.
+        :return:
+        """
         return self.summary
 
 
