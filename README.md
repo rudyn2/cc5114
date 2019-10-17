@@ -6,7 +6,7 @@ of the CC5114 course. For more details please read the Readme of the folders lis
 
 Tarea 1: README.md in '/cc5114/src/neural_network'
 
-Tarea 2: Readme.md in '/cc5114/src/genetic_algorithm'
+Tarea 2: README.md in '/cc5114/src/genetic_algorithm'
 
 # License
 
