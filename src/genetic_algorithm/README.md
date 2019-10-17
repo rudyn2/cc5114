@@ -181,9 +181,10 @@ A plot of the evolution per generation is shown below.
 
 ![UML](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_algorithm/resources/gen_evolution.png)
 
-Also, the hotmap for the population sizes and mutation rates is the following.
+Also, the hotmap for the population sizes and mutation rates is the following, the variable being analyzed is the
+mean fitness score at the 10th generation.
 
-![UML]()
+![UML](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_algorithm/resources/hotmap.png)
 
 From this results we can extract several conclusions. In first place, the number of iterations needed to found a solution
 to the problem are just a few (in the mean scenario it is approximately 5 generations). The solution found is [0 1 1 1 1]
