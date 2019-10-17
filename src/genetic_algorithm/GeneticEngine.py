@@ -108,12 +108,10 @@ class GeneticEngine:
             scores = self.population.calculate_scores()
 
             # Summary of the progress
-            try:
-                summary['best_scores'].append(np.max(scores))
-                summary['worst_scores'].append(np.min(scores))
-                summary['mean_scores'].append((np.mean(scores)))
-            except ValueError:
-                pass
+            summary['best_scores'].append(np.max(scores))
+            summary['worst_scores'].append(np.min(scores))
+            summary['mean_scores'].append((np.mean(scores)))
+
             if verbose:
                 print(f"Generation {generation}, best score: {summary['best_scores'][-1]}, "
                       f"worst score: {summary['worst_scores'][-1]}, mean score: {summary['mean_scores'][-1]}")

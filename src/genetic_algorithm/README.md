@@ -74,11 +74,11 @@ they can reproduce them and are the building blocks of some population), fitness
 and can evaluate them accordingly to some user-defined metric), and finally, the genetic 
 algorithm engine (executes the logical steps of a genetic algorithm).
 
-Analysis
-===
+![UML](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_algorithm/resources/UML_class.png)
+
 
 Implementation
----
+===
 
 * Individuals: Each new individual must be created as a instance of a child class from the Individual class. The
 individual class is an pseudo-abstract class that provides the specification for the actions (methods) that an individual
@@ -115,7 +115,7 @@ given some parameters, functions and classes. The algorithm is executed as follo
 * Utils: It has the plot hotmap method that given some gen size, fitness function and a individual generator can plot
 a hotmap that shows the performance of the genetic engine for a combination of population sizes and mutation rates.
 
-Results
+Exercises
 ====
 
 This genetic algorithm was tested for three kind of problems.
@@ -137,7 +137,63 @@ lower case. As the intuition says, the individual is modeled as a string, so, a 
 will change for other letter. The fitness function corresponds to the amount of letters that are equals between the
 target word and the individual. For the experiment shown below the target word is "ElBromas".
 
+0-1 Knapsack problem
+========
 
+In the context of the cc5114 homework #2, the selected problem to solve is 0-1 Knapsack. To introduce a little bit,
+The 0-1 knapsack (01KP) is an combinatorial optimization problem classified as a NP complete problem.
+ 
+ In simple words,
+the situation described is that someones has to choose between several items where each of them has an 
+value and weight, and just one item can be choose per class. But, in order to find the good selection, the sum of all
+ the weights selected cant be greater than some value (it is a restriction). The optimization is trying to select an 
+ combination of items that maximizes the total value.
+ 
+ For this particular problem, 5 different 
+ elements can be selected:
+
+- A box of weight 12 and value 4.
+- A box of weight 2 and value 2.
+- A box of weight 1 and value 2.
+- A box of weight 1 and value 1.
+- A box of weight 4 and value 10.
+
+The total weight restriction is fixed in 15. 
+
+A solution of this problem can be achieved using GA algorithms but a good model is needed. The proposed 
+model is the following:
+
+- *Individual*: Each individual has genes that can be represented as a sequence of bits. The length of this
+genes are equals to the total of different items that can be choose (5). The element i of this sequence correspond to a
+bit where 1 means that the item i was selected and 0 if not. So, one individual represents one selection and the 
+gene describe it.
+
+- *Fitness*: The weights and values of the items will be represented in an array of equal length than the total of 
+different items, then, they will have the same length as the gen of the individuals. To compute the fitness of each 
+individual first the total weights is computed calculating the dot product between the gen and the weights, so, given
+the binary representation, just the selected items will be included in the sum. If the total weight is greater than the
+maximum capacity (15) then the fitness is 0. Otherwise, the fitness will be the dot product between the values and the 
+genes (this means the sum of values of the items selected).
+
+In terms of code, no modifications was introduced in the engine. The classes KnapSackFitness_01 and KnapSack01Individual
+represents the fitness and individual, respectively. Using this approach the results are good, and a solution is found.
+A plot of the evolution per generation is shown below.
+
+![UML](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_algorithm/resources/gen_evolution.png)
+
+Also, the hotmap for the population sizes and mutation rates is the following.
+
+![UML]()
+
+From this results we can extract several conclusions. In first place, the number of iterations needed to found a solution
+to the problem are just a few (in the mean scenario it is approximately 5 generations). The solution found is [0 1 1 1 1]
+that means that all the lighter items were selected summing a total of 15 and weight of 8, we would tend to think that
+there is space that is not being taken advantage of, but, given the restrictions that doesn't matters because the total
+values is maximum; as we can see, the heavier item is not being selected because it uses all the capacity and dont sum a
+great value. From the hotmap we can see an interesting fact: when we increase the population size the mutation began
+to don't matter. That happens because when we have a great population, the probability of having diversity is greater 
+even with a slow mutation rate, but in the opposite case, when the population size is little, we need a good mutation rate
+in order to achieve gen diversity over the generations. g
 
 
 

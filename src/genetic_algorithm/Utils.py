@@ -27,11 +27,10 @@ def printProgressBar (iteration, total, prefix='', suffix='', decimals=1, length
         print()
 
 
-def heatmap(data, row_labels, col_labels, ax=None,
-            cbar_kw={}, cbarlabel="", **kwargs):
+def heatmap(data, row_labels, col_labels, xlabel, ylabel, ax=None, cbarlabel="", **kwargs):
     """
     Create a heatmap from a numpy array and two lists of labels.
-    Source: https://matplotlib.org/3.1.1/gallery/images_contours_and_fields/image_annotated_heatmap.html.
+    Code adapted from: https://matplotlib.org/3.1.1/gallery/images_contours_and_fields/image_annotated_heatmap.html.
 
     Parameters
     ----------
@@ -59,7 +58,7 @@ def heatmap(data, row_labels, col_labels, ax=None,
     im = ax.imshow(data, **kwargs)
 
     # Create colorbar
-    cbar = ax.figure.colorbar(im, ax=ax, **cbar_kw)
+    cbar = ax.figure.colorbar(im, ax=ax)
     cbar.ax.set_ylabel(cbarlabel, rotation=-90, va="bottom")
 
     # We want to show all ticks...
@@ -76,6 +75,8 @@ def heatmap(data, row_labels, col_labels, ax=None,
     # Rotate the tick labels and set their alignment.
     plt.setp(ax.get_xticklabels(), rotation=-30, ha="right",
              rotation_mode="anchor")
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
 
     # Turn spines off and create white grid.
     for edge, spine in ax.spines.items():
@@ -100,11 +101,11 @@ def plot_hotmap(gen_size,
     :return:
     """
 
-    pop_sizes = np.linspace(50, 1000, 10)
-    mutation_rates = np.linspace(0, 1, 10)
+    pop_sizes = np.linspace(50, 1000, 11)
+    mutation_rates = np.linspace(0, 1, 11)
     mean_scores = []
 
-    total_iteration = 10*10
+    total_iteration = 11*11
     iteration = 1
     for pop_size in pop_sizes:
         sub_mean_scores = []
@@ -125,8 +126,12 @@ def plot_hotmap(gen_size,
         mean_scores.append(sub_mean_scores)
 
     mean_scores = np.array(mean_scores)
+    pop_sizes_labels = [f'{int(size):d}' for size in pop_sizes]
+    mut_rates_labels = [f'{rate:.2f}' for rate in mutation_rates]
     fig, ax = plt.subplots()
-    heatmap(mean_scores, row_labels=pop_sizes, col_labels=mutation_rates, ax=ax,
-            cmap="YlGn", cbarlabel="Mean fitness at 10th generation")
+    plt.title('Hotmap from GA Hyperparameters')
+    heatmap(mean_scores, row_labels=pop_sizes_labels, col_labels=mut_rates_labels, xlabel='Mutation rates',
+            ylabel='Population sizes', ax=ax, cmap="YlGn", cbarlabel="Mean fitness at 10th generation")
     fig.tight_layout()
     plt.show()
+
