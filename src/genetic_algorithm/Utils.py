@@ -97,8 +97,18 @@ def plot_hotmap(gen_size,
                 gen_mutation_rate: float = 0.2,
                 n_iter: int = 10):
     """
-    Creates a hotmap of the mean fitness after n iterations.
-    :return:
+    Plots a hotmap.png of the mean fitness score after n_iter generations of the GA algorithm. It also returns, the
+    achieved scores, and the population sizes & mutation rates that were used to calculate the scores.
+    :param gen_size:                                            Size of the gen.
+    :param fitness_function:                                    Fitness function instance.
+    :param individual_generator:                                Individual Generator Class.
+    :param elitism_rate:                                        Elitism rate.
+    :param gen_mutation_rate:                                   Gen mutation rate.
+    :param n_iter:                                              Number of iterations to calculate the mean score.
+    :return:                                                    A Tuple.
+                                                                    1) Mean scores after n_iter generation.
+                                                                    2) Population sizes (axis y in the hotmap.png).
+                                                                    3) Mutation rates (axis x in the hotmap.png).
     """
 
     pop_sizes = np.linspace(50, 1000, 11)
@@ -129,9 +139,10 @@ def plot_hotmap(gen_size,
     pop_sizes_labels = [f'{int(size):d}' for size in pop_sizes]
     mut_rates_labels = [f'{rate:.2f}' for rate in mutation_rates]
     fig, ax = plt.subplots()
-    plt.title('Hotmap from GA Hyperparameters')
     heatmap(mean_scores, row_labels=pop_sizes_labels, col_labels=mut_rates_labels, xlabel='Mutation rates',
             ylabel='Population sizes', ax=ax, cmap="YlGn", cbarlabel="Mean fitness at 10th generation")
     fig.tight_layout()
     plt.show()
+
+    return mean_scores, pop_sizes, mutation_rates
 

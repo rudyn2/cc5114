@@ -3,7 +3,7 @@ from src.genetic_algorithm.IndividualGuys import WordIndividual
 from src.genetic_algorithm.FitnessGuys import WordFitness
 
 
-word_to_find = 'Elbroma'
+word_to_find = 'broma'
 w_fitness = WordFitness.WordFitness(word_to_find)
 plot_hotmap(gen_size=len(word_to_find),
             fitness_function=w_fitness,
