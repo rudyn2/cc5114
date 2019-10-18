@@ -1,5 +1,6 @@
-from src.genetic_algorithm.Individual import Individual
 import numpy as np
+
+from src.genetic_algorithm.Individual import Individual
 
 
 class KnapSack01Individual(Individual):

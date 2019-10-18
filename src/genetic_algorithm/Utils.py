@@ -1,6 +1,7 @@
-from src.genetic_algorithm.GeneticEngine import GeneticEngine
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
+from src.genetic_algorithm.GeneticEngine import GeneticEngine
 
 
 # Print iterations progress
@@ -136,7 +137,6 @@ def plot_hotmap(gen_size,
     pop_sizes_labels = [f'{int(size):d}' for size in pop_sizes]
     mut_rates_labels = [f'{rate:.2f}' for rate in mutation_rates]
     fig, ax = plt.subplots()
-    plt.title('Hotmap from GA Hyperparameters')
     heatmap(mean_scores, row_labels=pop_sizes_labels, col_labels=mut_rates_labels, xlabel='Mutation rates',
             ylabel='Population sizes', ax=ax, cmap="YlGn", cbarlabel="Mean fitness at 10th generation")
     fig.tight_layout()

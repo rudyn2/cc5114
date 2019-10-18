@@ -1,5 +1,6 @@
-from src.genetic_algorithm.Fitness import Fitness
 import numpy as np
+
+from src.genetic_algorithm.Fitness import Fitness
 
 
 class KnapSackFitness_01(Fitness):

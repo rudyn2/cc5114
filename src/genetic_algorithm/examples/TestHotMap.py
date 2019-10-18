@@ -1,7 +1,6 @@
-from src.genetic_algorithm.Utils import plot_hotmap
-from src.genetic_algorithm.IndividualGuys import WordIndividual
 from src.genetic_algorithm.FitnessGuys import WordFitness
-
+from src.genetic_algorithm.IndividualGuys import WordIndividual
+from src.genetic_algorithm.Utils import plot_hotmap
 
 word_to_find = 'broma'
 w_fitness = WordFitness.WordFitness(word_to_find)

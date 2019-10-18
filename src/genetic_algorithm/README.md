@@ -55,16 +55,15 @@ ga.plot_evolution()
 Example execution
 ---
 
-In order to give to the first user a fast understanding of the code he can review the TestGA.py code available
+In order to give to the first user a fast understanding of the code, he can review the TestWordProblem.py code available
 in the examples folder. To execute it:
 
 1) Open a terminal.
-2) Change your directory to this folder.
-3) Execute in the console: ``python Example.py``.
+2) Change your directory to the src/genetic_algorithm/examples folder.
+3) Execute in the console: ``python TestWordProblem.py``.
 4) Ready.
 
-The example will load the Iris Dataset and train a neural network using some of the tools that this
-repository provides.
+The example will execute a Genetic Algorithm Engine to solve a simple problem: finding a word.
 
 UML Class
 ---
