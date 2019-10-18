@@ -194,7 +194,7 @@ values is maximum; as we can see, the heavier item is not being selected because
 great value. From the hotmap we can see an interesting fact: when we increase the population size the mutation began
 to don't matter. That happens because when we have a great population, the probability of having diversity is greater 
 even with a slow mutation rate, but in the opposite case, when the population size is little, we need a good mutation rate
-in order to achieve gen diversity over the generations. g
+in order to achieve gen diversity over the generations. TestingEWEtr
 
 
 
