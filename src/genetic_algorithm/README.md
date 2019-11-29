@@ -55,16 +55,15 @@ ga.plot_evolution()
 Example execution
 ---
 
-In order to give to the first user a fast understanding of the code he can review the TestGA.py code available
+In order to give to the first user a fast understanding of the code, he can review the TestWordProblem.py code available
 in the examples folder. To execute it:
 
 1) Open a terminal.
-2) Change your directory to this folder.
-3) Execute in the console: ``python Example.py``.
+2) Change your directory to the src/genetic_algorithm/examples folder.
+3) Execute in the console: ``python TestWordProblem.py``.
 4) Ready.
 
-The example will load the Iris Dataset and train a neural network using some of the tools that this
-repository provides.
+The example will execute a Genetic Algorithm Engine to solve a simple problem: finding a word.
 
 UML Class
 ---
@@ -105,7 +104,9 @@ given some parameters, functions and classes. The algorithm is executed as follo
     5) For each children created, performs a mutation with some probability.
     6) Go to step 2.
     
-    At the moment, the only supported criterion is a maximum number of iterations. All the parameters like the 
+    At the moment, the only two supported ending criterion are supported. The first is the maximum iterations, that
+    stops the algorithm when a number of iterations is reached. The second, is the fitness threshold condition,
+    that stops the algorithm when a user-defined fitness score is reached. All the parameters like the 
     probability of mutation, the size of the population, the fitness function, the individual generator, the size of 
     each chromosome, the elitism rate, and others must be provided in the constructor of the engine. Remember that the **fitness function**
     and the **individual generator** must be provided and these are the elements that will define your problem. Once
@@ -194,7 +195,8 @@ values is maximum; as we can see, the heavier item is not being selected because
 great value. From the hotmap we can see an interesting fact: when we increase the population size the mutation began
 to don't matter. That happens because when we have a great population, the probability of having diversity is greater 
 even with a slow mutation rate, but in the opposite case, when the population size is little, we need a good mutation rate
-in order to achieve gen diversity over the generations. TestingEWEtr
+in order to achieve gen diversity over the generations. Also, for big mutation rates, the mean score tends to 
+decrease a little bit, that can be explained because more bad individuals can be inserted into the population.
 
 
 

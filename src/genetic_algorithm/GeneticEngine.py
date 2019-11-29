@@ -66,7 +66,33 @@ class GeneticEngine:
         temp_manager.fit(random_choices)
         return temp_manager.select_best()
 
-    def run(self, verbose=True):
+    def eval_condition(self, mode: str, **kwargs):
+        """
+        Evaluation condition. It receives a mode as a string and evaluates a condition using the keyword
+        arguments. This method was created to support futures new more complex conditions.
+        :param mode:                                    Mode of operations.
+                                                            max_iter: The algorithm will stop when a given amount
+                                                            of iterations is reached. The maximum number of iterations
+                                                            is the n_iter parameter given in the GA constructor,
+                                                            fitness_threshold: The algorithm will stop when
+                                                            the mean score reach some user-defined value specified
+                                                            in the keyword arguments as fitness_threshold.
+        :return:
+        """
+        if mode == 'max_iter':
+            assert 'iter_actual' in list(kwargs.keys()), \
+                "For max iter condition the actual iteration must be provided as keyword parameter: 'iter_actual'"
+
+            return kwargs['iter_actual'] <= self.max_iter
+        elif mode == 'fitness_threshold':
+            assert 'fitness_threshold' in list(kwargs.keys()) and 'fitness_actual' in list(kwargs.keys()), \
+                "For fitness threshold condition the actual fitness and fitness threshold " \
+                "must be provided as keyword parameter: 'fitness_threshold' and 'fitness_actual'"
+            return kwargs['fitness_actual'] <= kwargs['fitness_threshold']
+        else:
+            raise ValueError("No valid condition mode")
+
+    def run(self, mode: str, verbose=True, **kwargs):
         """
         Runs the Genetic Algorithm.
         :return:
@@ -80,11 +106,16 @@ class GeneticEngine:
 
         # Calculate the scores
         scores = self.population.calculate_scores()
-        generation = 1
+        mean_fitness = np.mean(scores)
+
+        # Adding actual fitness to kwargs
+        kwargs['fitness_actual'] = mean_fitness
+        kwargs['iter_actual'] = 0
+        generation = 0
 
         # Summary dict
         summary = defaultdict(list)
-        for _ in range(self.max_iter):
+        while self.eval_condition(mode, **kwargs) or generation <= self.max_iter:
 
             # Elitism
             new_generation = self.population.select_rate_best(self.elitism_rate)
@@ -106,6 +137,8 @@ class GeneticEngine:
             # ------------------------------------------------------
 
             scores = self.population.calculate_scores()
+            kwargs['fitness_actual'] = np.mean(scores)
+            kwargs['iter_actual'] = generation
 
             # Summary of the progress
             summary['best_scores'].append(np.max(scores))

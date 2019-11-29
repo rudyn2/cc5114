@@ -1,5 +1,6 @@
-from src.genetic_algorithm.Fitness import Fitness
 import numpy as np
+
+from src.genetic_algorithm.Fitness import Fitness
 
 
 class KnapSackFitness_01(Fitness):
@@ -31,6 +32,7 @@ class KnapSackFitness_01(Fitness):
         :return:                                        The score.
         """
         selected_elements = individual.get_gen()
-        if np.sum(np.array(self.weights)*np.array(selected_elements)) > self.max_capacity:
-            return .0
+        total_weight = np.sum(np.array(self.weights)*np.array(selected_elements))
+        if total_weight > self.max_capacity:
+            return -total_weight
         return np.sum(np.array(self.values)*np.array(selected_elements))

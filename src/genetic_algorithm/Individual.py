@@ -8,7 +8,7 @@ class Individual:
     def __init__(self, length_gen: int):
         self.length_gen = length_gen
 
-    def eval(self, fitness_function: Fitness):
+    def eval(self, fitness_function: Fitness) -> float:
         return fitness_function.eval(self)
 
     @abstractmethod

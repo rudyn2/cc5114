@@ -1,6 +1,7 @@
-from src.genetic_algorithm.GeneticEngine import GeneticEngine
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
+from src.genetic_algorithm.GeneticEngine import GeneticEngine
 
 
 # Print iterations progress
@@ -92,23 +93,17 @@ def heatmap(data, row_labels, col_labels, xlabel, ylabel, ax=None, cbarlabel="",
 
 def plot_hotmap(gen_size,
                 fitness_function,
+                mode: str,
                 individual_generator, *,
                 elitism_rate: float = 0.1,
                 gen_mutation_rate: float = 0.2,
-                n_iter: int = 10):
+                n_iter: int = 10,
+                **kwargs):
     """
-    Plots a hotmap.png of the mean fitness score after n_iter generations of the GA algorithm. It also returns, the
-    achieved scores, and the population sizes & mutation rates that were used to calculate the scores.
-    :param gen_size:                                            Size of the gen.
-    :param fitness_function:                                    Fitness function instance.
-    :param individual_generator:                                Individual Generator Class.
-    :param elitism_rate:                                        Elitism rate.
-    :param gen_mutation_rate:                                   Gen mutation rate.
-    :param n_iter:                                              Number of iterations to calculate the mean score.
-    :return:                                                    A Tuple.
-                                                                    1) Mean scores after n_iter generation.
-                                                                    2) Population sizes (axis y in the hotmap.png).
-                                                                    3) Mutation rates (axis x in the hotmap.png).
+    Creates a hotmap of the mean fitness after n iterations. The input parameters correspond to the needed for the
+    GA Engine. The hotmap will be constructed depending of the 'mode'. If the mode is 'max_iter', the image will
+    show the mean score of the last generation, if the mode is 'fitness_threshold' it will show the number of
+    iterations needed to converge.
     """
 
     pop_sizes = np.linspace(50, 1000, 11)
@@ -128,9 +123,12 @@ def plot_hotmap(gen_size,
                                    fitness_function=fitness_function,
                                    individual_generator=individual_generator,
                                    max_iter=n_iter)
-            new_ga.run(verbose=False)
+            new_ga.run(mode=mode, verbose=False, **kwargs)
             summary = new_ga.get_summary()
-            sub_mean_scores.append(summary['mean_scores'][-1])
+            if mode == 'max_iter':
+                sub_mean_scores.append(summary['mean_scores'][-1])
+            elif mode == 'fitness_threshold':
+                sub_mean_scores.append(len(summary['mean_scores']))
             printProgressBar(iteration, total_iteration, prefix='Progress', suffix='Complete')
             iteration += 1
         mean_scores.append(sub_mean_scores)
@@ -143,6 +141,4 @@ def plot_hotmap(gen_size,
             ylabel='Population sizes', ax=ax, cmap="YlGn", cbarlabel="Mean fitness at 10th generation")
     fig.tight_layout()
     plt.show()
-
-    return mean_scores, pop_sizes, mutation_rates
 
