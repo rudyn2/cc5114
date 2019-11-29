@@ -62,6 +62,16 @@ class Node:
         self.__class__ = otherNode.__class__
         self.__dict__ = otherNode.__dict__
 
+    def get_depth(self):
+        if self.num_arguments == 0:
+            return 0
+        return 1 + max([node.get_depth() for node in self.arguments])
+
+    def is_pure(self):
+        childs = self.serialize()
+        terminal_nodes = [node.eval() for node in childs if isinstance(node, TerminalNode)]
+        return terminal_nodes == list(set(terminal_nodes))
+
 
 # esta clase representa todos los nodos quetienen 2 argumentos
 class BinaryNode(Node):

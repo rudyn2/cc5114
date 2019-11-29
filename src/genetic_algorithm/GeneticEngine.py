@@ -176,6 +176,12 @@ class GeneticEngine:
         """
         return self.summary
 
+    def get_best(self):
+        """
+        Return the best individual of the last generation.
+        :return:                    Individual
+        """
+        return self.population.select_best()
 
 
 
