@@ -133,6 +133,7 @@ class GeneticEngine:
                     new_individual.mutate(self.gen_mutation_rate)
 
                 new_generation.append(new_individual)
+
             self.population.fit(new_generation)
             # ------------------------------------------------------
 

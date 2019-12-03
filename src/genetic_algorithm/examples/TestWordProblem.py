@@ -9,7 +9,7 @@ ga = GeneticEngine(population_size=100,
                    gen_size=len(word_to_find),
                    mutation_rate=0.8,
                    gen_mutation_rate=0.2,
-                   elitism_rate=0.1,
+                   elitism_rate=0.2,
                    fitness_function=w_fitness,
                    individual_generator=WordIndividual.WordIndividual,
                    max_iter=20)

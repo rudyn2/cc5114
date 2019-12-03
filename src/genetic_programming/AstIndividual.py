@@ -20,8 +20,8 @@ class AstIndividual(Individual):
             raise KeyError("You must provide a max depth parameter for the Individual")
 
         super().__init__(self.max_depth)
-        tree_gen = AST(allowed_functions=self.allowed_functions, allowed_terminals=self.allowed_terminals)
-        self.tree = tree_gen(max_depth=self.max_depth)
+        self.tree_gen = AST(allowed_functions=self.allowed_functions, allowed_terminals=self.allowed_terminals)
+        self.tree = self.tree_gen(max_depth=self.max_depth)
 
     def cross_over(self, other):
         parent_2 = other.get_gen()
@@ -46,7 +46,12 @@ class AstIndividual(Individual):
         return child
 
     def mutate(self, gen_mutation_rate):
-        pass
+
+        copy = self.tree.copy()
+        node_to_mutate = random.choice(copy.serialize())
+        mutation = self.tree_gen(max_depth=node_to_mutate.get_depth())
+        node_to_mutate.replace(mutation)
+        return copy
 
     def get_gen(self):
         return self.tree
