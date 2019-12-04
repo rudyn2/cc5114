@@ -16,10 +16,10 @@ sample_tree_2 = ast_generator(max_depth=2)     # this doesn't have repeated term
 class TestIsPureMethod(unittest.TestCase):
 
     def test_false_pure(self):
-        self.assertFalse(sample_tree_1.is_pure())
+        self.assertFalse(sample_tree_1.is_pure(feed_dict={'values': []}))
 
     def test_true_pure(self):
-        self.assertTrue(sample_tree_2.is_pure())
+        self.assertTrue(sample_tree_2.is_pure(feed_dict={'values': []}))
 
 
 class TestGetDepth(unittest.TestCase):

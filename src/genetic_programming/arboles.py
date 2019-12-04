@@ -67,9 +67,9 @@ class Node:
             return 0
         return 1 + max([node.get_depth() for node in self.arguments])
 
-    def is_pure(self):
+    def is_pure(self, feed_dict: dict):
         childs = self.serialize()
-        terminal_nodes = [node.eval() for node in childs if isinstance(node, TerminalNode)]
+        terminal_nodes = [node.eval(feed_dict) for node in childs if isinstance(node, TerminalNode)]
         return len(set(terminal_nodes)) == len(terminal_nodes)
 
 
@@ -100,7 +100,7 @@ class AddNode(BinaryNode):
     
 class SubNode(BinaryNode):
     def __init__(self, left, right):
-        def _sub(x,y):
+        def _sub(x, y):
             return x - y
         super(SubNode, self).__init__(_sub, left, right)
         
@@ -110,8 +110,8 @@ class SubNode(BinaryNode):
     
 class MaxNode(BinaryNode):
     def __init__(self, left, right):
-        def _max(x,y):
-            return max(x,y)
+        def _max(x, y):
+            return max(x, y)
         super(MaxNode, self).__init__(_max, left, right)
         
     def __repr__(self):
@@ -126,8 +126,18 @@ class MultNode(BinaryNode):
         
     def __repr__(self):
         return "({} * {})".format(*self.arguments)
-    
-    
+
+
+class DivNode(BinaryNode):
+    def __init__(self, left, right):
+        def _div(x, y):
+            return x / y
+        super(DivNode, self).__init__(_div, left, right)
+
+    def __repr__(self):
+        return "({} / {})".format(*self.arguments)
+
+
 class TerminalNode(Node):
     # Este nodo representa una hoja de arbol. Es el nodo terminal
     # por lo que no tiene argumentos

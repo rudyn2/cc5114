@@ -138,7 +138,7 @@ class GeneticEngine:
             # ------------------------------------------------------
 
             scores = self.population.calculate_scores()
-            kwargs['fitness_actual'] = np.mean(scores)
+            kwargs['fitness_actual'] = np.max(scores)
             kwargs['iter_actual'] = generation
 
             # Summary of the progress

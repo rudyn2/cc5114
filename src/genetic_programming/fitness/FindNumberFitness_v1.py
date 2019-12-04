@@ -11,4 +11,4 @@ class FindNumberFitness(Fitness):
     def eval(self, individual):
         assert isinstance(individual, AstIndividual), "The individual to evaluate must be an Abstract Syntax Tree"
         tree_to_eval = individual.get_gen()
-        return -(abs(self.target_number - tree_to_eval.eval()) + tree_to_eval.get_depth())
+        return -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values':[]})) + tree_to_eval.get_depth())
