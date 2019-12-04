@@ -25,7 +25,7 @@ class Node:
         self.arguments = []
         
     # funcion para evaluar un nodo (calcular el resultado)
-    def eval(self):
+    def eval(self, feed_dict: dict):
         # es importante chequear que los argumentos que nos dieron
         # coincidan con los argumentos que necesitamos
         assert len(self.arguments) == self.num_arguments
@@ -38,7 +38,7 @@ class Node:
         # esto se llama `unpacking`.
         # lo necesitamos porque nuestra funcion recibe N argumentos
         # no una lista de tamaño N.
-        return self.operation(*[node.eval() for node in self.arguments])
+        return self.operation(*[node.eval(feed_dict) for node in self.arguments])
     
     # hace una lista con todos los hijos
     def serialize(self):
@@ -70,7 +70,7 @@ class Node:
     def is_pure(self):
         childs = self.serialize()
         terminal_nodes = [node.eval() for node in childs if isinstance(node, TerminalNode)]
-        return terminal_nodes == list(set(terminal_nodes))
+        return len(set(terminal_nodes)) == len(terminal_nodes)
 
 
 # esta clase representa todos los nodos quetienen 2 argumentos
@@ -142,6 +142,9 @@ class TerminalNode(Node):
     def __repr__(self):
         return str(self.value)
     
-    def eval(self):
+    def eval(self, feed_dict: dict):
         # la evaluacion de un nodo terminal es el valor que contiene
-        return self.value
+        try:
+            return feed_dict[self.value] if isinstance(self.value, str) else self.value
+        except KeyError:
+            raise KeyError(f"El diccionario no posee un valor para la variable {self.value}.")
