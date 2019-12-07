@@ -197,7 +197,7 @@ equal. The key line to implement it is shown below.
 ````
 
 The full implementation can be revisited in: 
-[Find a nuber with repetition: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFintess_v0.py "Find a number with repetition")
+[Find a nuber with repetition: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFitness_v0.py "Find a number with repetition")
 
 Find a number with repetition and constrains
 ---
@@ -215,7 +215,7 @@ Finally, the implementation in python is something like this,
 ````
 
 The full implementation can be revisited in: 
-[Find a nuber with repetition and constrains: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFintess_v1.py "Find a number with repetition")
+[Find a nuber with repetition and constrains: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFitness_v1.py "Find a number with repetition")
 
 Find a number without repetition and constrains
 ---
