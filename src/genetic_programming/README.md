@@ -14,17 +14,12 @@ implementation of the cross over and mutation operations.
 I am not a native english speaker so maybe you might find some spelling mistakes (sorry). I am trying to improve 
 my english abilities, thanks for your patience.
 
-Table of Contents
-================
+**Table of Contents**
 
-  * [Cloning the repository](#cloning)
-  * [Usage](#usage)
-    * [Example execution](#example-execution)
-  * [Analysis](#analysis)
-    * [Implementation](#implementation)
-    * [The rocks in the way](#the-rocks-in-the-way)
-    * [Results](#results)
-    
+[TOCM]
+
+[TOC]
+
 Cloning the repository
 ===
 
@@ -193,7 +188,7 @@ of the result of the tree and the expected result. But as we know, the GA search
 equal. The key line to implement it is shown below.
 
 ````
--(abs(self.target_number - tree_to_eval.eval(feed_dict={'values':[]})))
+fitness = -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values':[]})))
 ````
 
 The full implementation can be revisited in: 
@@ -211,7 +206,7 @@ library. This method finds the depth efficiently using recursion.
 Finally, the implementation in python is something like this,
 
 ````
--(abs(self.target_number - tree_to_eval.eval(feed_dict={'values':[]})) + tree_to_eval.get_depth())
+fitness = -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values':[]})) + tree_to_eval.get_depth())
 ````
 
 The full implementation can be revisited in: 
@@ -220,8 +215,24 @@ The full implementation can be revisited in:
 Find a number without repetition and constrains
 ---
 
+The thing is getting harder. This problem is the same as before BUT also needs that the solution trees don't have
+repetitions. To address this new difficult the fitness function needs to be adapted. The key idea is to punish 
+the trees that have repetitions. So, we'll call **pureness** the property of being a tree that don't have repeated
+terminals. Therefore, the adaption is clear. Each tree not pure will be punished, such as each not pure 
+tree score will be decreased some factor. To implement this, we need something that can tell us if a particular tree
+is pure. Then, the ***is_pure*** method is implemented in the node class of the *arboles* library, this method
+takes a node, serialize it, extracts just the terminal nodes, and checks if there is repeated terminal nodes. Using
+this method, the key line in the adapted fitness function is shown below.
+
+````
+punishment = 1 if tree_to_eval.is_pure(feed_dict={'values': []}) else 100
+fitness = -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values': []})) + tree_to_eval.get_depth())*punishment
+````
+
 Symbolic regression
 ---
+
+
 
 Division
 --
