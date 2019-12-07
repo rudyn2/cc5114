@@ -309,6 +309,18 @@ operations, letting it raise errors and as we know which error will happen we ca
 To illustrate the use of this approach we will use the new "DivNode" fo the find this number problem. The fitness
 function is shown below.
 
+Initialization of the fitness function and individual generator:
+
+````
+allowed_functions = [AddNode, SubNode, MultNode, DivNode]
+allowed_terminals = [25, 7, 8, 100, 4, 2]
+
+find_number_fitness = FindNumberFitness(target_number=65346)
+ast_gen = AstIndividualGenerator(allowed_functions=allowed_functions, allowed_terminals=allowed_terminals)
+````
+
+Definition of the eval() method in the FindNumberFitness implementation:
+
 ````
 try:
     return -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values': []})) + tree_to_eval.get_depth())
