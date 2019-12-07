@@ -153,7 +153,8 @@ class TerminalNode(Node):
         return str(self.value)
     
     def eval(self, feed_dict: dict):
-        # la evaluacion de un nodo terminal es el valor que contiene
+        # If the value is a string we return the value stored in the feed_dict, otherwise we return the value (it is assumed
+        # it is a number)
         try:
             return feed_dict[self.value] if isinstance(self.value, str) else self.value
         except KeyError:

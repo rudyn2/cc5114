@@ -20,8 +20,21 @@ my english abilities, thanks for your patience.
 
 [TOC]
 
-Cloning the repository
-===
+Table of Contents
+================
+
+* [Cloning the repository](#cloning)
+* [Usage](#usage)
+* [Example execution](#example-execution)
+* [Implementation](#implementation)
+    * [Crossover](#cross-over)
+    * [Mutation](#mutation)
+* [The little hack](#the-little-hack)
+* [The rocks in the way](#the-rocks-in-the-way)
+* [Results](#results)
+
+# Cloning the repository
+
 
 To clone the repository please follow the next steps (you must have the git software in your system).
 
@@ -29,8 +42,7 @@ To clone the repository please follow the next steps (you must have the git soft
 2) Run ``git clone https://github.com/rudyn2/cc5114.git``
 3) Ready.
 
-Usage
-====
+# Usage
 
 In order to use the genetic algorithm engine you must provide the basics of GA implementations: a fitness function and a 
 individual specification. The example showed above implements the minimal code needed to execute a genetic programming
@@ -64,8 +76,7 @@ ga.plot_evolution()
 
 Maybe it is now a little bit confusing but keep reading and it'll be much clear.
 
-Example execution
----
+## Example execution
 
 In order to give to the first user a fast understanding of the code, he can review the examples/find_number.py code
 available in the examples folder. To execute it:
@@ -77,8 +88,7 @@ available in the examples folder. To execute it:
 
 The example will execute a Genetic Programming Algorithm to solve the same problem of the usage example.
 
-UML Class
----
+# UML Class
 
 As usual, the logic semantic segmentation of the classes for a genetic algorithm are: individuals (that can mutate, 
 they can reproduce them and are the building blocks of some population), fitness functions (takes and individual
@@ -88,8 +98,8 @@ algorithm engine (executes the logical steps of a genetic algorithm).
 ![UML](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_algorithm/resources/UML_class.png)
 
 
-Implementation
-===
+# Implementation
+
 
 To understand better the logic behind the genetic engine used in this project please go to 
 [Genetic Algorithms](https://github.com/rudyn2/cc5114/tree/master/src/genetic_algorithm "Genetic Algorithms") folder, 
@@ -113,7 +123,7 @@ instance of the Node class that has to be generated using the **abstract_syntax_
 an amazing tree generator), and the second one is is the generator used to generate the tree attribute, it is saved
 because will be need to perform the mutation operation. 
 
-### Cross over
+## Cross over
 As we know, the cross over operation has to be perform to a tree. To do it, several steps are needed. These steps
 are shown below.
 
@@ -136,7 +146,7 @@ copy_parent_1.replace(second_parent_sub_tree)
 This implementation assumes that we have a parent_1 and parent_2 instances (Node's class instances) and ensures
 that the cross-over between them will produce a new individual totally independent of their parents.
 
-### Mutation
+## Mutation
 
 The mutation is a little different. The steps are shown below.
 
@@ -153,8 +163,7 @@ node_to_mutate.replace(mutation)
 ````
 It is important to mention that this operation is performed into the tree and makes effect to this same tree.
 
-The little hack
-===
+# The little hack
 
 From the implementation of the genetic algorithm we know the most important things to specify are the 
 fitness function and the individual generator. In the case of the individual generator, the requirements says
@@ -170,13 +179,12 @@ generate new instances using the init method, we use a instance of a class to ge
 but using the call method.
 
 
-Exercises
-====
+# Exercises
 
 This genetic algorithm was tested for three kind of problems.
 
-Find a number with repetition
----
+## Find a number with repetition
+
 
 This problem is about finding a mathematical expression which its evaluation result in some target number.
 For example, if the target number is 10, a optimal solution may be 5 + 5 or 2 * 5. No constrains are needed.
@@ -194,8 +202,8 @@ fitness = -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values':[]}))
 The full implementation can be revisited in: 
 [Find a nuber with repetition: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFitness_v0.py "Find a number with repetition")
 
-Find a number with repetition and constrains
----
+## Find a number with repetition and constrains
+
 
 This problem is the same as the before but adds a constrain. Now, it is also desired trees more smalls. So, the problem
 is turned into a multiple objective optimization problem. To solved problem a new component is introduced to the 
@@ -212,8 +220,7 @@ fitness = -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values':[]}))
 The full implementation can be revisited in: 
 [Find a nuber with repetition and constrains: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFitness_v1.py "Find a number with repetition")
 
-Find a number without repetition and constrains
----
+## Find a number without repetition and constrains
 
 The thing is getting harder. This problem is the same as before BUT also needs that the solution trees don't have
 repetitions. To address this new difficult the fitness function needs to be adapted. The key idea is to punish 
@@ -229,15 +236,87 @@ punishment = 1 if tree_to_eval.is_pure(feed_dict={'values': []}) else 100
 fitness = -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values': []})) + tree_to_eval.get_depth())*punishment
 ````
 
-Symbolic regression
----
+The full implementation can be revisited in: 
+[Find a nuber without repetition and constrains: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFitness_v2.py "Find a number without repetition")
+
+## Symbolic regression
+
+This problem is a little more complex but like always finding a good fitness function is enough. What is desired here
+is finding an equation that fits to some set of data. For example if we have the function $$ x^2 + x + 6 $$ we could
+generate some dataset of 100 pairs of (x, f(x)) points, then, if we passed this to our GP algorithm this will return
+the ***symbolic*** function $$ x^2 + x + 6 $$. In order to do this we will need an implementation for *variables*, 
+such as we can be able to have trees that we can evaluate over some data. This variables will be the "x" of our 
+objective function. Then, the implementation of the variables will be seen before. 
+
+### Variable implementation
+
+The approach to have trees with variables is simple. As we know that a variable is a kind of terminal node, we will
+modify the TerminalNode class defined in the *arboles* library so it can have string values. All we need is a way
+to differentiate when a terminal node value is string or float so we can evaluate them different. The key code for the
+eval method of the terminal node is here:
+
+````
+# If the value is a string we return the value stored in the feed_dict, otherwise we return the value (it is assumed
+# it is a number)
+try:
+    return feed_dict[self.value] if isinstance(self.value, str) else self.value
+except KeyError:
+    raise KeyError(f"El diccionario no posee un valor para la variable {self.value}.")
+````
+
+As we can see, a feed_dict is needed. This feed_dict must be (obviously) a dictionary with some structure constrains.
+This constrains are simple. If we have a terminal node with a value of "x" (it means is a variable), then at the moment
+of evaluate it the feed_dict *must* have the "x" key stored, otherwise that terminal node can't be evaluated.
+
+### Fitness implementation
+
+Using this variable implementation we can define a fitness function. This fitness function just iterates over some
+set of data and calculates the absolute difference between the target values and the generated values, accumulates it 
+and finally returns it. The meaning of this is like finding the discrete integral of the absolute error. As before, the
+GP can maximize and we want to minimize the error, then we maximize the inverse of the error (final score). 
+
+````
+difference = 0
+    for idx in range(len(self.target_data['values'])):
+        # build the feed dict with all the variables
+        feed_dict = {}
+        for var in self.target_data.keys():
+            if var == 'values':
+                continue
+            feed_dict[var] = self.target_data[var][idx]
+        difference += abs(tree_to_eval.eval(feed_dict)-self.target_data['values'][idx])
+````            
+As we can see, some constrains needs to be taken in count to execute this fitness function, in particular, to the
+target data (specified in the fitness constructor). This constrains are the following: It *must* have a key called
+"values" at which the objective function values are stored as a list. All the other keys, *must* 
+be the arguments (like x, y, z or other thing, the name doesn't matter). Also, the values of each key *must*
+be an iterable of same length, so each point can be generated (otherwise will be more than arguments than values
+representing them). This way the feed_dict can represent each (x, y, z, ..., f(x, y, z, ...)) point. 
+
+This implementation allows the searching of arbitrary multi-variable real functions.
 
 
 
-Division
---
+## Division
 
+The *arboles* library provides a lot of internal nodes (functions) like addition, subtraction, multiplication and 
+maximum but we would like to have the division operation. The problem with this is that if we have '0' terminals
+a ZeroDivisionError can occur. To address this problem a simple approach is used. We implement the division as the other
+operations, letting it raise errors and as we know which error will happen we can catch it later.
 
+### Fitness implementation
 
+To illustrate the use of this approach we will use the new "DivNode" fo the find this number problem. The fitness
+function is shown below.
 
+````
+try:
+    return -(abs(self.target_number - tree_to_eval.eval(feed_dict={'values': []})) + tree_to_eval.get_depth())
+except ZeroDivisionError:
+    return -10**12
+````
 
+As we can see, if the tree that is being evaluated has a division by zero the ZeroDivisionError wil be caught and 
+a really bad fitness is returned (so that malicious trees can be detected and ignored).
+
+## Analysis
