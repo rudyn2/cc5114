@@ -155,7 +155,7 @@ class GeneticEngine:
             print(f"Best individual of last generation: {self.population.select_best()}")
         self.summary = summary
 
-    def plot_evolution(self):
+    def plot_evolution(self, y_scale=False):
         """
         Generates a plot of the generation's evolution.
         """
@@ -167,6 +167,8 @@ class GeneticEngine:
         plt.title('Generation evolution')
         plt.xlabel('# Generation')
         plt.ylabel('Score')
+        if y_scale:
+            plt.yscale('symlog')
         plt.legend()
         plt.show()
 

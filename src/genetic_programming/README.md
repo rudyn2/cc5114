@@ -1,6 +1,6 @@
 # Genetic Algorithms
 
-The code hosted here contains the implementation of a genetic programming algorithms, some solved problems using this 
+The code hosted here contains the implementation of genetic programming algorithms, some solved problems using this 
 technique and also some examples in order to illustrate its use. This project use the genetic engine implemented
 in the last homework with the aim to keep the same genetic algorithm. The innovation here is the creation of a new
 type of individual, a tree individual. These trees, also called Abstract Syntax Tree, are a representation of the 
@@ -14,12 +14,6 @@ implementation of the cross over and mutation operations.
 I am not a native english speaker so maybe you might find some spelling mistakes (sorry). I am trying to improve 
 my english abilities, thanks for your patience.
 
-**Table of Contents**
-
-[TOCM]
-
-[TOC]
-
 Table of Contents
 ================
 
@@ -30,8 +24,13 @@ Table of Contents
     * [Crossover](#cross-over)
     * [Mutation](#mutation)
 * [The little hack](#the-little-hack)
-* [The rocks in the way](#the-rocks-in-the-way)
-* [Results](#results)
+* [Exercises](#exercises)
+    * [Finding a number with repetition](#find-a-number-with-repetition)
+    * [Finding a number with repetition and constrains](#find-a-number-with-repetition-and-constrains)
+    * [Finding a number without repetition and constrains](#find-a-number-without-repetition-and-constrains)
+    * [Symbolic Regression](#symbolic-regression)
+    * [Division](#division)
+* [Results and Analysis](#results-and-analysis)
 
 # Cloning the repository
 
@@ -319,7 +318,7 @@ find_number_fitness = FindNumberFitness(target_number=65346)
 ast_gen = AstIndividualGenerator(allowed_functions=allowed_functions, allowed_terminals=allowed_terminals)
 ````
 
-Definition of the eval() method in the FindNumberFitness implementation:
+Fragment of the definition of the eval() method in the FindNumberFitness implementation:
 
 ````
 try:
@@ -331,4 +330,81 @@ except ZeroDivisionError:
 As we can see, if the tree that is being evaluated has a division by zero the ZeroDivisionError wil be caught and 
 a really bad fitness is returned (so that malicious trees can be detected and ignored).
 
-## Analysis
+# Results and Analysis
+
+This section shows the results of the execution of the solution for the problems mentioned before. It is important to 
+say that given the volatility of the GP algorithm sometimes there are really bad results and to see better the 
+fitness evolution the y-scale was set up to a logarithm scale to improve the understanding of the evolution.
+
+## Finding a number with repetition
+
+The target number was set up to 65346. The allowed functions are addition, subtraction and multiplication. The 
+max depth for the tree generator was set up to 5. The allowed terminals are {25, 7, 8, 100, 4, 2}.
+The fitness function that provides the restrictions for this problem is the defined in FindNumberFitness_v0.py. 
+The parameters of the genetic algorithm are the following:
+
+- Population size: 200
+- Mutation rate: 0.8
+- Elitism rate: 0.7
+- Maximum number of iterations: 10
+
+After a couple of executions, the following results gives a 0 error. It means that its evaluation
+gives exactly the expected number: 65346 with a depth of 5.
+
+Result:
+
+$$ (((4 + 25) * ((8 + 8) * 7)) - (2 + ((4 - (25 * 25)) * (8 + (100 - 8))))) $$
+
+The fitness evolution is shown below.
+
+img of fitness evol
+
+## Finding a number with repetition and constrains
+
+As it was said before, we now introduce the depth constrain defined in the FindNumberFitness_v1.py file. We also
+modify a little bit the parameters allowing more diversity reducing the elitism rate to 0.4 and the max depth to 3, so 
+there is more probability of having little trees.The other parameters remains as the previous problem.
+
+At the third execution of the algorithm we found after 4 iterations the following expression:
+
+((((8 * 8) * 8) * ((2 * 8) * 8)) + (8 - (25 * 8)))
+
+This expression represents a tree with depth of 4 and its evaluation gives an amazing result of 65344. This is a better
+tree with even less depth than the previous approach. 
+
+The fitness evolution is shown below.
+
+
+
+## Finding a number without repetition and constrains
+
+Now the difficult increases. The problem is the same as the previous one but now we want trees with unique terminal
+nodes. The implementation of this problem was described in previous section. After 16 executions of the 
+genetic algorithm this tree was found.
+
+((7 * ((2 + 100) - 8)) * (4 * 25))
+
+The evaluation gives 65800, a really close result. The depth is 4, not too big and most important it has now
+the property that we were searching: the uniques terminal nodes. 6 of the 6 terminals allowed were used on this tree
+to give an amazing result. The main problem with this exercise was that the GP algorithm was executed a lot of times
+in order to achieve this result. It is important to say that in the process of testing the most repeated result
+was this tree: ((25 * 100) * (4 * 7)) that gives a number of 70000 with a depth of 2 (not really bad). 
+
+The fitness evolution is shown below.
+
+## Symbolic regression
+
+The allowed functions used in this problem were the addition, subtraction and multiplication. The allowed terminals
+are the integer numbers from -10 to 10 and 21 times the "x" symbol (to represent a expression). The target function 
+is x^2 + x + 6, from which the data to feed the algorithm was generated. The parameters used for the GP algorithm are 
+the following.
+
+- Population size: 100
+- Mutation rate: 0.6
+- Elitism rate: 0.6
+- Maximum depth of generated trees: 4
+- Max number of iterations: 10
+
+The best result found was the following which gives this expression:
+
+## D
