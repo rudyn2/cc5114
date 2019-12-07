@@ -5,14 +5,7 @@ import random
 
 class AstIndividual(Individual):
 
-    def __init__(self, **kwargs):
-
-        try:
-            self.allowed_functions = kwargs['allowed_functions']
-            self.allowed_terminals = kwargs['allowed_terminals']
-        except KeyError:
-            raise KeyError("You must provide the allowed_functions and "
-                           "allowed_terminals into the AstIndividual constructor.")
+    def __init__(self, *, allowed_functions, allowed_terminals, **kwargs):
 
         try:
             self.max_depth = kwargs['max_depth'] if 'max_depth' in kwargs.keys() else kwargs['length_gen']
@@ -20,7 +13,9 @@ class AstIndividual(Individual):
             raise KeyError("You must provide a max depth parameter for the Individual")
 
         super().__init__(self.max_depth)
-        self.tree_gen = AST(allowed_functions=self.allowed_functions, allowed_terminals=self.allowed_terminals)
+        self.allowed_functions = allowed_functions
+        self.allowed_terminals = allowed_terminals
+        self.tree_gen = AST(allowed_functions=allowed_functions, allowed_terminals=allowed_terminals)
         self.tree = self.tree_gen(max_depth=self.max_depth)
 
     def cross_over(self, other):
@@ -34,7 +29,7 @@ class AstIndividual(Individual):
         cross_over_node = random.choice(copy_parent_1.serialize())
 
         # Third: a node from the second parent is randomly selected
-        second_parent_sub_tree = random.choice(parent_2.serialize())
+        second_parent_sub_tree = random.choice(parent_2.serialize()).copy()
 
         # Fourth: the second sub tree is replaced in the selected node from the first parent
         cross_over_node.replace(second_parent_sub_tree)
@@ -47,11 +42,15 @@ class AstIndividual(Individual):
 
     def mutate(self, gen_mutation_rate):
 
-        copy = self.tree.copy()
-        node_to_mutate = random.choice(copy.serialize())
+        # Step 1: Choose some node from the copy, this node will be mutated.
+        node_to_mutate = random.choice(self.tree.serialize())
+
+        # Step 2: The mutation is generated with max depth equal to the node to mutate depth
         mutation = self.tree_gen(max_depth=node_to_mutate.get_depth())
+        assert node_to_mutate.get_depth() >= mutation.get_depth()
+
+        # Step 3: The mutation is performed in the selected node
         node_to_mutate.replace(mutation)
-        return copy
 
     def get_gen(self):
         return self.tree

@@ -1,4 +1,3 @@
-import abstract_syntax_tree
 from arboles import *
 from fitness.SymbolicRegressionFitness import SymbolicRegressionFitness
 import numpy as np
