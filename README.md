@@ -8,6 +8,8 @@ Tarea 1: README.md in '/cc5114/src/neural_network'
 
 Tarea 2: README.md in '/cc5114/src/genetic_algorithm'
 
+Tarea 3: README.md in '/cc5114/src/genetic_algorithm'
+
 # License
 
 This project is licensed under the terms of the MIT license.
