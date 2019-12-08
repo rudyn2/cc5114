@@ -6,7 +6,7 @@ from GeneticEngine import GeneticEngine
 
 random.seed(31)
 
-max_depth = 5
+max_depth = 3
 allowed_functions = [AddNode, SubNode, MultNode]
 allowed_terminals = list(range(-10, 11))
 allowed_terminals.extend(["x"]*len(allowed_terminals))
@@ -19,11 +19,18 @@ regression_fitness = SymbolicRegressionFitness(target_data={
 ast_gen = AstIndividualGenerator(allowed_functions=allowed_functions, allowed_terminals=allowed_terminals)
 ga = GeneticEngine(population_size=100,
                    gen_size=max_depth,
-                   mutation_rate=0.6,
+                   mutation_rate=0.5,
                    gen_mutation_rate=0.3,
-                   elitism_rate=0.6,
+                   elitism_rate=0.5,
                    fitness_function=regression_fitness,
                    individual_generator=ast_gen,
-                   max_iter=5)
-ga.run(mode='fitness_threshold', fitness_threshold=-1)
-ga.plot_evolution()
+                   max_iter=10)
+depth = 100
+i = 1
+while depth > 4:
+    ga.run(mode='fitness_threshold', fitness_threshold=-1, verbose=False)
+    depth = ga.get_best().tree.get_depth()
+    print(i)
+    i += 1
+ga.plot_evolution(y_scale=True)
+print(depth)

@@ -338,7 +338,7 @@ fitness evolution the y-scale was set up to a logarithm scale to improve the und
 
 ## Finding a number with repetition
 
-The target number was set up to 65346. The allowed functions are addition, subtraction and multiplication. The 
+The target number was set up to 65346. The allowed functions are addition, subtraction, multiplication and maximum. The 
 max depth for the tree generator was set up to 5. The allowed terminals are {25, 7, 8, 100, 4, 2}.
 The fitness function that provides the restrictions for this problem is the defined in FindNumberFitness_v0.py. 
 The parameters of the genetic algorithm are the following:
@@ -349,32 +349,34 @@ The parameters of the genetic algorithm are the following:
 - Maximum number of iterations: 10
 
 After a couple of executions, the following results gives a 0 error. It means that its evaluation
-gives exactly the expected number: 65346 with a depth of 5.
+gives exactly the expected number: 65346 with a depth of 12 at the generation number 32.
 
 Result:
 
-$$ (((4 + 25) * ((8 + 8) * 7)) - (2 + ((4 - (25 * 25)) * (8 + (100 - 8))))) $$
+(max({((7 + 25) * (25 * 25)), max({(max({(7 * (25 * 100)), max({(((7 + 25) * (2 * 8)) + 25), (max({((7 + 25) * (25 * 100)), max({(((7 + 25) * (25 * 100)) + 25), (2 - 4)})}) - 4)})}) + 25), (2 * (100 - 7))})}) + ((max({2, 2}) * (max({2, 2}) - 100)) * (25 + (25 + 25))))
 
 The fitness evolution is shown below.
 
-img of fitness evol
+![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v0/4.png)
 
 ## Finding a number with repetition and constrains
 
 As it was said before, we now introduce the depth constrain defined in the FindNumberFitness_v1.py file. We also
-modify a little bit the parameters allowing more diversity reducing the elitism rate to 0.4 and the max depth to 3, so 
+modify a little bit the parameters reducing the diversity setting the mutation rate to 0.4 and the max depth to 4, so 
 there is more probability of having little trees.The other parameters remains as the previous problem.
 
 At the third execution of the algorithm we found after 4 iterations the following expression:
 
-((((8 * 8) * 8) * ((2 * 8) * 8)) + (8 - (25 * 8)))
+((((4 * 4) - (25 + 100)) * (25 - 8)) - (((100 * 4) * (4 - 25)) * (4 - (4 - 8))))
 
-This expression represents a tree with depth of 4 and its evaluation gives an amazing result of 65344. This is a better
+This expression represents a tree with depth of 4 and its evaluation gives an amazing result of 65347. This is a better
 tree with even less depth than the previous approach. 
 
 The fitness evolution is shown below.
 
+![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v1/3.png)
 
+You can see this and another results in folder _v0 located at the experimental results section: [Find a nuber without repetition and constrains: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFitness_v2.py "Find a number without repetition")
 
 ## Finding a number without repetition and constrains
 
@@ -392,6 +394,8 @@ was this tree: ((25 * 100) * (4 * 7)) that gives a number of 70000 with a depth 
 
 The fitness evolution is shown below.
 
+![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v0/4.png)
+
 ## Symbolic regression
 
 The allowed functions used in this problem were the addition, subtraction and multiplication. The allowed terminals
@@ -403,8 +407,29 @@ the following.
 - Mutation rate: 0.6
 - Elitism rate: 0.6
 - Maximum depth of generated trees: 4
-- Max number of iterations: 10
+- Max number of iterations: ? (Fitness criterion used)
 
 The best result found was the following which gives this expression:
 
-## D
+((x - 6) + (x * x))
+
+With a depth of 2 this expression matches exactly to the expected one. The criterion to stop the algorithm
+was set up when the best tree has a fitness of 0 (remember that the scores are in the
+negative domain). Then, the algorithm took 98 generations to find a solution (a couple of minutes
+of processing). This was executed several times and this results shows the tree with minimal depth. During this
+experiment other solutions were found but they had greater depth. 
+
+The fitness evolution is shown below.
+
+![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v0/4.png)
+
+As we can see, an elitism rate greater than zero makes that the best individual fitness never goes down. Also
+the difference between the worst and the best individuals suggest that there is enough diversity at each 
+generation. This genetic diversity is beneficial to the algorithm exploration.
+
+## Division
+
+To show an example of the division node working the *find this number* problem is solved using this kind of 
+operation. So, the allowed functions will be the same as before: addition, subtraction, multiplication and this time 
+also the division. The target number is 65346 and the parameters can be reviewed in the 
+***Finding a number with repetition*** section. 
