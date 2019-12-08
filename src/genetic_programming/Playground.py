@@ -1,5 +1,5 @@
 from AstIndividualGenerator import AstIndividualGenerator
-from fitness.FindNumberFitness_v2 import FindNumberFitness
+from fitness.FindNumberFitness_v1 import FindNumberFitness
 from arboles import *
 from GeneticEngine import GeneticEngine
 
@@ -13,7 +13,7 @@ find_number_fitness = FindNumberFitness(target_number=65346)
 ast_gen = AstIndividualGenerator(allowed_functions=allowed_functions, allowed_terminals=allowed_terminals)
 ga = GeneticEngine(population_size=200,
                    gen_size=max_depth,
-                   mutation_rate=0.8,
+                   mutation_rate=0.5,
                    gen_mutation_rate=0.3,
                    elitism_rate=0.7,
                    fitness_function=find_number_fitness,
