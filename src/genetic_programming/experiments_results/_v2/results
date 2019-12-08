@@ -3,3 +3,26 @@
 depth: 3
 number: 66000
 generation: 32
+
+2:
+(((25 - 2) * 4) * (100 * 7))
+depth: 3
+number: 64400
+generation: 20
+
+3:
+(((25 - 2) * 7) * (100 * 4))
+depth: 3
+generation: 34
+
+4:
+((100 - 8) * (25 * (7 * 4)))
+depth: 3
+number: 64400
+generation: 54
+
+5:
+(((100 + 2) - 8) * (25 * (7 * 4)))
+depth: 3
+number: 65800
+generation: 54

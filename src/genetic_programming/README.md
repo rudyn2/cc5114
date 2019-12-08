@@ -381,20 +381,20 @@ You can see this and another results in folder _v0 located at the experimental r
 ## Finding a number without repetition and constrains
 
 Now the difficult increases. The problem is the same as the previous one but now we want trees with unique terminal
-nodes. The implementation of this problem was described in previous section. After 16 executions of the 
+nodes. The implementation of this problem was described in previous section. After 8 executions of the 
 genetic algorithm this tree was found.
 
-((7 * ((2 + 100) - 8)) * (4 * 25))
+(((100 + 2) - 8) * (25 * (7 * 4)))
 
-The evaluation gives 65800, a really close result. The depth is 4, not too big and most important it has now
+The evaluation gives 65800, a really close result. The depth is 3, not too big and most important it has now
 the property that we were searching: the uniques terminal nodes. 6 of the 6 terminals allowed were used on this tree
-to give an amazing result. The main problem with this exercise was that the GP algorithm was executed a lot of times
+to give this amazing result. The main problem with this exercise was that the GP algorithm was executed a lot of times
 in order to achieve this result. It is important to say that in the process of testing the most repeated result
 was this tree: ((25 * 100) * (4 * 7)) that gives a number of 70000 with a depth of 2 (not really bad). 
 
 The fitness evolution is shown below.
 
-![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v0/4.png)
+![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v2/5.png)
 
 ## Symbolic regression
 
