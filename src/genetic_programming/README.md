@@ -164,7 +164,7 @@ It is important to mention that this operation is performed into the tree and ma
 
 # The little hack
 
-From the implementation of the genetic algorithm we know the most important things to specify are the 
+From the implementation of the genetic algorithm we know that the most important things to specify are the 
 fitness function and the individual generator. In the case of the individual generator, the requirements says
 that this must be a "class" whose instances are some individual that can be evaluated using the specified fitness
 function. The problem is that this class must be such as the only parameter that can receive is the gen size or
@@ -359,6 +359,7 @@ The fitness evolution is shown below.
 
 ![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v0/4.png)
 
+You can see this and another results in folder _v0 located at the experimental results section: [Experimental results for this exercise](https://github.com/rudyn2/cc5114/tree/master/src/genetic_programming/experiments_results/_v0 "experimental results v0")
 ## Finding a number with repetition and constrains
 
 As it was said before, we now introduce the depth constrain defined in the FindNumberFitness_v1.py file. We also
@@ -376,7 +377,7 @@ The fitness evolution is shown below.
 
 ![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v1/3.png)
 
-You can see this and another results in folder _v0 located at the experimental results section: [Find a nuber without repetition and constrains: Fitness function implementation](https://github.com/rudyn2/cc5114/blob/master/src/genetic_programming/fitness/FindNumberFitness_v2.py "Find a number without repetition")
+You can see this and another results in folder _v1 located at the experimental results section: [Experimental results for this exercise](https://github.com/rudyn2/cc5114/tree/master/src/genetic_programming/experiments_results/_v1 "experimental results v1")
 
 ## Finding a number without repetition and constrains
 
@@ -387,7 +388,7 @@ genetic algorithm this tree was found.
 (((100 + 2) - 8) * (25 * (7 * 4)))
 
 The evaluation gives 65800, a really close result. The depth is 3, not too big and most important it has now
-the property that we were searching: the uniques terminal nodes. 6 of the 6 terminals allowed were used on this tree
+the property that we were searching: the uniques terminal nodes. 53 generations was needed to get it. 6 of the 6 terminals allowed were used on this tree
 to give this amazing result. The main problem with this exercise was that the GP algorithm was executed a lot of times
 in order to achieve this result. It is important to say that in the process of testing the most repeated result
 was this tree: ((25 * 100) * (4 * 7)) that gives a number of 70000 with a depth of 2 (not really bad). 
@@ -395,6 +396,8 @@ was this tree: ((25 * 100) * (4 * 7)) that gives a number of 70000 with a depth 
 The fitness evolution is shown below.
 
 ![Fitness evolution](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/_v2/5.png)
+
+You can see this and another results in folder _v2 located at the experimental results section: [Experimental results for this exercise](https://github.com/rudyn2/cc5114/tree/master/src/genetic_programming/experiments_results/_v2 "experimental results v0")
 
 ## Symbolic regression
 
@@ -427,9 +430,20 @@ As we can see, an elitism rate greater than zero makes that the best individual 
 the difference between the worst and the best individuals suggest that there is enough diversity at each 
 generation. This genetic diversity is beneficial to the algorithm exploration.
 
+You can see this and another results in folder "symbolic_regression" located at the experimental results section: [Experimental results for this exercise](https://github.com/rudyn2/cc5114/tree/master/src/genetic_programming/experiments_results/symbolic_regression "experimental results symbolic regression")
+
 ## Division
 
 To show an example of the division node working the *find this number* problem is solved using this kind of 
 operation. So, the allowed functions will be the same as before: addition, subtraction, multiplication and this time 
 also the division. The target number is 65346 and the parameters can be reviewed in the 
 ***Finding a number with repetition*** section. 
+
+The algorithm was executed a couple of times and the result, a random result is selected to illustrate the division 
+working:
+
+(((((((2 + 7) / 7) - 25) - 4) / (25 * 100)) + 25) * ((25 * 100) + ((100 + 7) - (2 - (4 - ((7 - 4) - (2 + 7)))))))
+
+This tree gives a 65346.010857142865 with a depth of 7 nodes. This result was achieved after 30 generations.
+
+You can see this and another results in folder _v3 located at the experimental results section: [Experimental results for this exercise](https://github.com/rudyn2/cc5114/tree/master/src/genetic_programming/experiments_results/_v3 "experimental results v3")

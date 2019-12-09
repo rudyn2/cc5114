@@ -98,6 +98,7 @@ def plot_hotmap(gen_size,
                 elitism_rate: float = 0.1,
                 gen_mutation_rate: float = 0.2,
                 n_iter: int = 10,
+                y_log_scale=True,
                 **kwargs):
     """
     Creates a hotmap of the mean fitness after n iterations. The input parameters correspond to the needed for the
@@ -140,5 +141,7 @@ def plot_hotmap(gen_size,
     heatmap(mean_scores, row_labels=pop_sizes_labels, col_labels=mut_rates_labels, xlabel='Mutation rates',
             ylabel='Population sizes', ax=ax, cmap="YlGn", cbarlabel="Mean fitness at 10th generation")
     fig.tight_layout()
+    if y_log_scale:
+        plt.yscale('symlog')
     plt.show()
 

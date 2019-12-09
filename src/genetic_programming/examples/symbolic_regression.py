@@ -6,16 +6,20 @@ from GeneticEngine import GeneticEngine
 
 random.seed(31)
 
+# Setting up the symbolic regression parameters
 max_depth = 3
 allowed_functions = [AddNode, SubNode, MultNode]
 allowed_terminals = list(range(-10, 11))
 allowed_terminals.extend(["x"]*len(allowed_terminals))
 
+# Defines the fitness
 x_domain = np.linspace(-100, 100, 201)
 regression_fitness = SymbolicRegressionFitness(target_data={
     'x': x_domain,
     'values': x_domain*x_domain + x_domain - 6
 })
+
+# Initialization of the genetic engine
 ast_gen = AstIndividualGenerator(allowed_functions=allowed_functions, allowed_terminals=allowed_terminals)
 ga = GeneticEngine(population_size=100,
                    gen_size=max_depth,
@@ -25,12 +29,8 @@ ga = GeneticEngine(population_size=100,
                    fitness_function=regression_fitness,
                    individual_generator=ast_gen,
                    max_iter=10)
-depth = 100
-i = 1
-while depth > 4:
-    ga.run(mode='fitness_threshold', fitness_threshold=-1, verbose=False)
-    depth = ga.get_best().tree.get_depth()
-    print(i)
-    i += 1
+
+# Executes the genetic engine
+ga.run(mode='fitness_threshold', fitness_threshold=-1, verbose=False)
 ga.plot_evolution(y_scale=True)
-print(depth)
+print(f"Depth: {ga.get_best().tree.get_depth()}")
