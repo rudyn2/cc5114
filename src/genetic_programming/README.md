@@ -399,6 +399,27 @@ The fitness evolution is shown below.
 
 You can see this and another results in folder _v2 located at the experimental results section: [Experimental results for this exercise](https://github.com/rudyn2/cc5114/tree/master/src/genetic_programming/experiments_results/_v2 "experimental results v0")
 
+### Heatmap
+
+This exercise was selected to perform an extra study: a heatmap. The idea of the heatmap is compare the performance
+of the algorithm given a combination of its parameters, for this case the population size and the mutation took a value
+between 50-500 and 0-1, respectively. Then, for each combination, the **mean score** at the 10th generation was calculated.
+Taking in count that the score (or fitness) defined for this problem is negative and moves between really large values
+the heatmap represents the the logarithm of the negative of this scores (fitness = -log(fitness)), this modification is 
+valid since the logarithm is a monotonous function. The heatmap found is shown below.
+
+![](https://raw.githubusercontent.com/rudyn2/cc5114/master/src/genetic_programming/experiments_results/heatmap.png)
+
+As we can see in the there is an important impact of the parameters chosen and the performance
+of the algorithm. We can see that for greater population sizes the mean is score is better and for
+bigger mutation rates it is also better. We can see also that there are some outliers in the representation, 
+that can be explained due to the randomness of the initialization of the trees. Another important insight is
+that for bigger population sizes littler mutation rates are needed to achieve the same mean fitness. This happens
+because when we increase the population size the diversity appears naturally but when we have just a few individuals
+in the population then the mutation rate is so important in order to get diversity. The diversity gives us the chance 
+of having some exceptional individual and then improve the genotype of each generation. 
+
+
 ## Symbolic regression
 
 The allowed functions used in this problem were the addition, subtraction and multiplication. The allowed terminals
