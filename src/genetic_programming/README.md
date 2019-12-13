@@ -1,4 +1,4 @@
-# Genetic Algorithms
+# Genetic Programming
 
 The code hosted here contains the implementation of genetic programming algorithms, some solved problems using this 
 technique and also some examples in order to illustrate its use. This project use the genetic engine implemented
