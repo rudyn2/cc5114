@@ -81,6 +81,7 @@ In order to give to the first user a fast understanding of the code, he can revi
 available in the examples folder. To execute it:
 
 1) Open a terminal.
+2) Add the src, src/genetic_algorithms and src/genetic_programming folder to the python env paths.
 2) Change your directory to the src/genetic_algorithm/examples folder.
 3) Execute in the console: ``python find_number.py``.
 4) Ready.
